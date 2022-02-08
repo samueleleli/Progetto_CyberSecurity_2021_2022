@@ -1,0 +1,92 @@
+{
+  "network": {
+    "name": "3-nodes-istanbul-tessera-docker-compose",
+    "verbosity": 5,
+    "consensus": "istanbul",
+    "quorumVersion": "21.4.0",
+    "transactionManager": "21.1.1",
+    "permissioned": true,
+    "genesisFile": "none",
+    "generateKeys": false,
+    "configDir": "network/3-nodes-istanbul-tessera-docker-compose/resources",
+    "deployment": "docker-compose",
+    "cakeshop": "0.12.1",
+    "splunk": false,
+    "prometheus": false,
+    "reporting": false,
+    "reportingRpcPort": "4000",
+    "reportingUiPort": "3000",
+    "networkId": "10",
+    "customizePorts": false,
+    "cakeshopPort": "8999",
+    "remoteDebug": false,
+    "splunkIp": "127.0.0.1",
+    "splunkPort": "8000",
+    "splunkHecPort": "8088"
+  },
+  "nodes": [
+    {
+      "quorum": {
+        "ip": "172.16.198.11",
+        "devP2pPort": 21000,
+        "rpcPort": 22000,
+        "wsPort": 23000,
+        "raftPort": 50401,
+        "graphQlPort": 24000
+      },
+      "tm": {
+        "ip": "172.16.198.101",
+        "thirdPartyPort": 9081,
+        "p2pPort": 9001
+      }
+    },
+    {
+      "quorum": {
+        "ip": "172.16.198.12",
+        "devP2pPort": 21001,
+        "rpcPort": 22001,
+        "wsPort": 23001,
+        "raftPort": 50402,
+        "graphQlPort": 24001
+      },
+      "tm": {
+        "ip": "172.16.198.102",
+        "thirdPartyPort": 9082,
+        "p2pPort": 9002
+      }
+    },
+    {
+      "quorum": {
+        "ip": "172.16.198.13",
+        "devP2pPort": 21002,
+        "rpcPort": 22002,
+        "wsPort": 23002,
+        "raftPort": 50403,
+        "graphQlPort": 24002
+      },
+      "tm": {
+        "ip": "172.16.198.103",
+        "thirdPartyPort": 9083,
+        "p2pPort": 9003
+      }
+    }
+  ],
+  "containerPorts": {
+    "dockerSubnet": "172.16.198.0/24",
+    "quorum": {
+      "rpcPort": 8545,
+      "p2pPort": 30303,
+      "raftPort": 50401,
+      "wsPort": 8546,
+      "graphQlPort": 8547
+    },
+    "tm": {
+      "p2pPort": 9001,
+      "thirdPartyPort": 9080
+    },
+    "reporting": {
+      "rpcPort": 4000,
+      "uiPort": 3000
+    }
+  }
+}
