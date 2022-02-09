@@ -92,14 +92,14 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
   }
 
   //cerca la materia prima in base al lotto
-  function searchMateriaPrimaByLotto(string memory lotto) public view returns (uint256, string memory, string memory, uint256){
+  function searchMateriaPrimaByLotto(string memory lotto) public view returns(string memory) {
       Risorsa memory risorsa = getRisorsaByLotto[string(abi.encodePacked("MP_",lotto))];
-      return (risorsa.idToken, risorsa.lotto, risorsa.nome, risorsa.footprint);
+      return buildMetadata(risorsa.idToken);
   }
 
-  function searchProdottoByLotto(string memory lotto) public view returns (uint256, string memory, string memory, uint256){
+  function searchProdottoByLotto(string memory lotto) public view returns(string memory) {
         Risorsa memory risorsa = getRisorsaByLotto[string(abi.encodePacked("P_",lotto))];
-        return (risorsa.idToken, risorsa.lotto, risorsa.nome, risorsa.footprint);
+        return buildMetadata(risorsa.idToken);
     }
 
   function getFootPrintByLotto(string memory lotto) public view returns (uint256){

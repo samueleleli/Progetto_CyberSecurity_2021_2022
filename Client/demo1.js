@@ -310,13 +310,10 @@ async function searchMateriaPrimaByLotto(lotto){
 	 await productFactory.methods
             .searchMateriaPrimaByLotto(lotto)
             .call({ from: account }).then((receipt) => {
-			
+				console.log(" ");
 				console.log(receipt);
-				console.log(" ");
-				console.log("Lotto MP: " + receipt.lotto);
-				console.log("Nome MP: " + receipt.nomeMateriaPrima);
-				console.log("Footprint MP: " + receipt.footprint);
-				console.log(" ");
+				result = toJson(receipt);
+				printNft(result,"MATERIA PRIMA");
 				goBackByAccount();
 		  });
 	
@@ -327,11 +324,14 @@ async function getNft(token){
             .call({ from: account }).then((receipt) => {
 				console.log(" ");
 				console.log(receipt);
-				const json = atob(receipt.substring(29));
-				const result = JSON.parse(json);
-				console.log(" ");
-				console.log(result);
-				console.log(" ");
+				result = toJson(receipt);
+				if(result.lotto.charAt(0)=='M'){
+					printNft(result,"MATERIA PRIMA");
+				}
+				else{
+					printNft(result,"PRODOTTO");
+				}
+
 				goBackByAccount();
 		  });
 	
@@ -341,6 +341,30 @@ async function getNft(token){
 //END - Interfacciamento con BlockChain
 
 //utils
+
+
+function printNft(nft,tipo){
+	
+	console.log(" ");
+	if(nft.lotto==""){
+		console.log(tipo+ " NON TROVATO!");
+		return;
+	}
+	console.log(tipo);
+	console.log(" ");
+    console.log("Lotto: " + nft.lotto);
+	console.log("Nome: " + nft.name);
+	console.log("Footprint: " + nft.footprint);
+	console.log(" ");
+	
+}	
+
+
+
+function toJson(receipt){
+	var json = atob(receipt.substring(29));
+	return JSON.parse(json);
+}
 
 function goBackByAccount(){
 	switch(account){

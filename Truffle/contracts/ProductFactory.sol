@@ -111,12 +111,12 @@ contract ProductFactory{
     }
 
     //cerca il prodotto in base al numero di lotto
-    function searchProdottoByLotto(string memory lotto) public view returns (uint256, string memory, string memory, uint256){
+    function searchProdottoByLotto(string memory lotto) public view returns (string memory){
         return CarbonFootprint(nftContractAddress).searchProdottoByLotto(lotto);
     }
 
     //cerca la materia prima in base al lotto
-    function searchMateriaPrimaByLotto(string memory lotto) public view returns (uint256, string memory, string memory, uint256){
+    function searchMateriaPrimaByLotto(string memory lotto) public view returns (string memory){
         return CarbonFootprint(nftContractAddress).searchMateriaPrimaByLotto(lotto);
     }
 
