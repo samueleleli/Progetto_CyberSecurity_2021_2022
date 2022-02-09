@@ -173,12 +173,10 @@ function menuFornitore(){
 				
 		        break;
 		 case "Visualizza Prodotto":
-				console.log("Hai selezionato l'account Consumatore");
 				Pvisualizza();
 				
 		        break;
 		case "Visualizza NFT":
-				console.log("Hai selezionato l'account Consumatore");
 				NFTvisualizza();
 				
 				break;
@@ -305,10 +303,11 @@ function MPcompra(){
 	inquirer.prompt(MPcompraQuestions).then((answers) => {
 		//mancano controlli sugli input
 		searchMateriaPrimaByLotto(answers.lotto).then((find)=>{
+			var lotto = answers.lotto;
 			if(find){
 				inquirer.prompt(compraConfirm).then((answers) => {
 					if(answers.decisione){
-						
+						acquistaMateriaPrima("MP_"+lotto);
 					}
 					else{
 						goBackByAccount();
@@ -330,6 +329,20 @@ function MPcompra(){
 
 //Interfacciamento con BlockChain
 
+async function acquistaMateriaPrima(lotto){
+	await productFactory.methods
+        .compraMateriePrima([lotto])
+        .send({ from: account})
+        .then((receipt) => {
+          console.log(receipt);
+		  goBackByAccount();	  
+		  
+	}).catch((err) => {
+		console.log("Failed with error: " + err);
+		goBackByAccount();
+	});
+}
+
 async function setMateriaPrima(lotto,nome, footprint){
 	await productFactory.methods
         .inserisciMateriaPrima(lotto, nome,footprint)
@@ -338,6 +351,9 @@ async function setMateriaPrima(lotto,nome, footprint){
           console.log(receipt);
 		  goBackByAccount()		  
 		  
+	}).catch((err) => {
+		console.log("Failed with error: " + err);
+		goBackByAccount();
 	});
 }
 
@@ -350,7 +366,10 @@ async function searchMateriaPrimaByLotto(lotto){
 				result = toJson(receipt);
 				return printNft(result,"MATERIA PRIMA");
 				
-		  });
+		  }).catch((err) => {
+		console.log("Failed with error: " + err);
+		goBackByAccount();
+	});
 	
 }
 async function getNft(token){
@@ -368,7 +387,10 @@ async function getNft(token){
 				}
 
 				goBackByAccount();
-		  });
+		  }).catch((err) => {
+		console.log("Failed with error: " + err);
+		goBackByAccount();
+	});
 	
 	
 }	
