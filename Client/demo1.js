@@ -44,6 +44,21 @@ const MPinserisciQuestions = [
     message: "Inserisci il footprint della materia prima",
   },
 ];
+const MPcompraQuestions = [
+  {
+    type: 'input',
+    name: 'lotto',
+    message: "Inserisci il numero di lotto da cercare",
+  }
+];
+const compraConfirm = [
+  {
+    type: 'confirm',
+    name: 'decisione',
+    message: "Vuoi confermare l'acquisto?",
+	default: false
+  }
+];
 
 const questionsMenuAccount = [
     {
@@ -187,27 +202,22 @@ function menuProduttore(){
 	inquirer.prompt(questionsMenuProduttore).then((answers) => {
     switch(answers.decisioneProd){
 		 case "Inserisci Prodotto":
-		        console.log("Hai selezionato l'account Fornitore");
 				Pinserisci();
 				
 		        break;
 		 case "Compra Materia Prima":
-				console.log("Hai selezionato l'account Produttore");
 				MPcompra();
 				
 		        break;	
 		 case "Visualizza Prodotto":
-				console.log("Hai selezionato l'account Produttore");
 				Pvisualizza();
 				
 		        break;
 		 case "Visualizza Materia Prima":
-				console.log("Hai selezionato l'account Consumatore");
 				MPvisualizza();
 				
 		        break;
 		case "Visualizza NFT":
-				console.log("Hai selezionato l'account Consumatore");
 				NFTvisualizza();
 				
 				break;
@@ -268,7 +278,9 @@ function MPinserisci(){
 }
 function MPvisualizza(){
 	inquirer.prompt(MPvisualizzaQuestions).then((answers) => {
-	 	searchMateriaPrimaByLotto(answers.lotto)
+	 	searchMateriaPrimaByLotto(answers.lotto).then(()=>{
+			goBackByAccount();
+		});
 	});
 }
 function NFTvisualizza(){
@@ -282,6 +294,7 @@ function NFTvisualizza(){
 //funzioni in corso
 
 function Pinserisci(){
+	
 }
 
 //funzioni da fare
@@ -289,6 +302,28 @@ function Pinserisci(){
 function Pvisualizza(){
 }
 function MPcompra(){
+	inquirer.prompt(MPcompraQuestions).then((answers) => {
+		//mancano controlli sugli input
+		searchMateriaPrimaByLotto(answers.lotto).then((find)=>{
+			if(find){
+				inquirer.prompt(compraConfirm).then((answers) => {
+					if(answers.decisione){
+						
+					}
+					else{
+						goBackByAccount();
+					}
+				});
+		 
+			}	
+			else{
+				goBackByAccount();
+			}
+			});
+		
+	    	
+		
+	});
 }
 
 //END - funzioni
@@ -307,14 +342,14 @@ async function setMateriaPrima(lotto,nome, footprint){
 }
 
 async function searchMateriaPrimaByLotto(lotto){
-	 await productFactory.methods
+	  return await productFactory.methods
             .searchMateriaPrimaByLotto(lotto)
             .call({ from: account }).then((receipt) => {
 				console.log(" ");
 				console.log(receipt);
 				result = toJson(receipt);
-				printNft(result,"MATERIA PRIMA");
-				goBackByAccount();
+				return printNft(result,"MATERIA PRIMA");
+				
 		  });
 	
 }
@@ -348,7 +383,8 @@ function printNft(nft,tipo){
 	console.log(" ");
 	if(nft.lotto==""){
 		console.log(tipo+ " NON TROVATO!");
-		return;
+		console.log(" ");
+		return false;
 	}
 	console.log(tipo);
 	console.log(" ");
@@ -356,7 +392,7 @@ function printNft(nft,tipo){
 	console.log("Nome: " + nft.name);
 	console.log("Footprint: " + nft.footprint);
 	console.log(" ");
-	
+	return true;
 }	
 
 
