@@ -11,6 +11,7 @@ var web3;
 var produttore = "";
 var fornitore = "";
 var consumatore = "";
+let attivitaList = [];
 
 const NFTvisualizzaQuestions = [
   {
@@ -51,6 +52,35 @@ const MPcompraQuestions = [
     message: "Inserisci il numero di lotto da cercare",
   }
 ];
+const PinserisciQuestions = [
+  {
+    type: 'input',
+    name: 'lotto',
+    message: "Inserisci il numero di lotto",
+  },
+  {
+    type: 'input',
+    name: 'nomeProdotto',
+    message: "Inserisci il nome",
+  },
+  {
+    type: 'input',
+    name: 'lottiMateriePrime',
+    message: "Inserisci i lotti delle materie prime utilizzate (devono essere separati da una virgola e con il prefisso MP_ - Esempio: MP_01, MP_02, MP_03)",
+  },
+];
+const AttivitaQuestions = [ 
+  {
+    type: 'input',
+    name: 'nomeAttivita',
+    message: "Inserisci il nome dell'attività",
+  },
+  {
+    type: 'number',
+    name: 'footprintAttivita',
+    message: "Inserisci il carbon footprint dell'attività",
+  }
+]
 const compraConfirm = [
   {
     type: 'confirm',
@@ -65,7 +95,7 @@ const questionsMenuAccount = [
       type: "list",
       name: "account",
       message: "Seleziona il tuo account",
-      choices: ["0xed9d02e382b34818e88B88a309c7fe71E65f419d", "0xcA843569e3427144cEad5e4d5999a3D0cCF92B8e", "0x0fBDc686b912d7722dc86510934589E0AAf3b55A","EXIT"]
+      choices: [ "Fornitore - 0xcA843569e3427144cEad5e4d5999a3D0cCF92B8e","Produttore - 0xed9d02e382b34818e88B88a309c7fe71E65f419d", "Consumatore - 0x0fBDc686b912d7722dc86510934589E0AAf3b55A","EXIT"]
     }
   ];
 const questionsMenuFornitore = [
@@ -73,7 +103,7 @@ const questionsMenuFornitore = [
       type: "list",
       name: "decisioneForn",
       message: "Azione",
-      choices: ["Inserisci Materia Prima", "Visualizza Materia Prima in base al Lotto", "Visualizza Prodotto", "Visualizza NFT", "Back"]
+      choices: ["Inserisci Materia Prima", "Cerca materia prima tramite il numero di lotto", "Cerca prodotto tramite il numero di lotto", "Cerca prodotto/materia prima tramite token", "Logout"]
     }
 ];
 const questionsMenuProduttore = [
@@ -81,7 +111,7 @@ const questionsMenuProduttore = [
       type: "list",
       name: "decisioneProd",
       message: "Azione",
-      choices: ["Inserisci Prodotto", "Compra Materia Prima", "Visualizza Prodotto", "Visualizza Materia Prima", "Visualizza NFT", "Back"]
+      choices: ["Inserisci Prodotto", "Compra Materia Prima", "Cerca prodotto tramite il numero di lotto", "Cerca materia prima tramite il numero di lotto", "Cerca prodotto/materia prima tramite token", "Logout"]
     }
 ];
 const questionsMenuConsumatore = [
@@ -89,10 +119,17 @@ const questionsMenuConsumatore = [
       type: "list",
       name: "decisioneCons",
       message: "Azione",
-      choices: ["Visualizza Prodotto", "Visualizza Materia Prima", "Visualizza NFT", "Back"]
+      choices: ["Cerca prodotto tramite il numero di lotto", "Cerca materia prima tramite il numero di lotto", "Cerca prodotto/materia prima tramite token", "Logout"]
     }
 ];
-
+const questionsMenuAttivita = [
+	{
+      type: "list",
+      name: "decisioneAttivita",
+      message: "Azione",
+      choices: ["Inserisci Nuova Attività", "Visualizza tutte le Attività", "Conferma definitiva dell'inserimento del prodotto","Back"]
+    }
+];
 
 askMenuPrincipale();
   
@@ -112,8 +149,8 @@ async function askMenuPrincipale() {
   consumatore = accounts[2];
   inquirer.prompt(questionsMenuAccount).then((answers) => {
     switch(answers.account){
-		 case fornitore:
-		        console.log("Hai selezionato l'account Fornitore, connessione al nodo in corso..");
+		 case "Fornitore - "+fornitore:
+		        console.log("\nHai selezionato l'account Fornitore, connessione al nodo in corso..\n");
 				web3 = new Web3('http://localhost:22001');
 				productFactory = new web3.eth.Contract(
 				ProductFactoryABI.abi,
@@ -125,8 +162,8 @@ async function askMenuPrincipale() {
 				
 				
 		        break;
-		 case produttore:
-				console.log("Hai selezionato l'account Produttore, connessione al nodo in corso..");
+		 case "Produttore - "+produttore:
+				console.log("\nHai selezionato l'account Produttore, connessione al nodo in corso..\n");
 				web3 = new Web3('http://localhost:22000');
 				productFactory = new web3.eth.Contract(
 				ProductFactoryABI.abi,
@@ -138,8 +175,8 @@ async function askMenuPrincipale() {
 				
 				
 		        break;
-		 case consumatore:
-				console.log("Hai selezionato l'account Consumatore, connessione al nodo in corso..");
+		 case "Consumatore - "+consumatore:
+				console.log("\nHai selezionato l'account Consumatore, connessione al nodo in corso..\n");
 				web3 = new Web3('http://localhost:22002');
 				productFactory = new web3.eth.Contract(
 				ProductFactoryABI.abi,
@@ -168,25 +205,22 @@ function menuFornitore(){
 				MPinserisci();
 				
 		        break;
-		 case "Visualizza Materia Prima in base al Lotto":
+		 case "Cerca materia prima tramite il numero di lotto":
 				MPvisualizza();
 				
 		        break;
-		 case "Visualizza Prodotto":
+		 case "Cerca prodotto tramite il numero di lotto":
 				Pvisualizza();
 				
 		        break;
-		case "Visualizza NFT":
+		case "Cerca prodotto/materia prima tramite token":
 				NFTvisualizza();
 				
 				break;
 				
-		 case "Back":
+		 case "Logout":
 		        askMenuPrincipale();
 				break;
-	     case "EXIT":
-		        return 0;
-		        break;
 	 }
 	});
 	
@@ -200,6 +234,7 @@ function menuProduttore(){
 	inquirer.prompt(questionsMenuProduttore).then((answers) => {
     switch(answers.decisioneProd){
 		 case "Inserisci Prodotto":
+				console.log("\n PASSO 1: inserimento dei dati del prodotto: \n");
 				Pinserisci();
 				
 		        break;
@@ -207,25 +242,22 @@ function menuProduttore(){
 				MPcompra();
 				
 		        break;	
-		 case "Visualizza Prodotto":
+		 case "Cerca prodotto tramite il numero di lotto":
 				Pvisualizza();
 				
 		        break;
-		 case "Visualizza Materia Prima":
+		 case "Cerca materia prima tramite il numero di lotto":
 				MPvisualizza();
 				
 		        break;
-		case "Visualizza NFT":
+		case "Cerca prodotto/materia prima tramite token":
 				NFTvisualizza();
 				
 				break;
 				
-		 case "Back":
+		 case "Logout":
 		        askMenuPrincipale();
 				break;
-	     case "EXIT":
-		        return 0;
-		        break;
 	 }
 	});
 	
@@ -235,28 +267,22 @@ function menuConsumatore(){
 	//può visualizzare nft, prodotti e materie prime
 		inquirer.prompt(questionsMenuConsumatore).then((answers) => {
     switch(answers.decisioneCons){
-		 case "Visualizza Prodotto":
-				console.log("Hai selezionato l'account Produttore");
+		 case "Cerca prodotto tramite il numero di lotto":
 				Pvisualizza();
 				
 		        break;
-		 case "Visualizza Materia Prima":
-				console.log("Hai selezionato l'account Consumatore");
+		 case "Cerca materia prima tramite il numero di lotto":
 				MPvisualizza();
 				
 		        break;
-		case "Visualizza NFT":
-				console.log("Hai selezionato l'account Consumatore");
+		case "Cerca prodotto/materia prima tramite token":
 				NFTvisualizza();
 				
 				break;
 				
-		 case "Back":
+		 case "Logout":
 		        askMenuPrincipale();
 				break;
-	     case "EXIT":
-		        return 0;
-		        break;
 	 }
 	});
 	
@@ -290,15 +316,92 @@ function NFTvisualizza(){
 }
 
 //funzioni in corso
-
 function Pinserisci(){
+	//inserimento attività
+	inquirer.prompt(PinserisciQuestions).then((answers) => {
+		
+		
+		//lottiMateriePrime = answers.lottiMateriePrime+','
+		var product = {
+			lotto: answers.lotto,
+			nome: answers.nomeProdotto,
+			lottiMateriePrime: answers.lottiMateriePrime.split(','),
+			nomiAttivita: [],
+			footprintAttivita: [],
+		};
+		console.log("\n PASSO 2: inserimento dei footprint delle attività: \n");
+		Ainserisci(product);
+	});
+
+}
+
+
+
+function Ainserisci(product){
+	
+	
+	//inserimento attività
+	inquirer.prompt(questionsMenuAttivita).then((answers) => {
+		switch(answers.decisioneAttivita){
+		 case "Inserisci Nuova Attività":
+				inserisciAttivita(product);
+				
+		        break;
+		 case "Visualizza tutte le Attività":
+				console.log(attivitaList);
+				Ainserisci(product);
+		        break;	
+		
+		 case "Conferma definitiva dell'inserimento del prodotto":
+				if(attivitaList.length == 0){
+					console.log("\n La lista delle attività è vuota! \n");
+					Ainserisci(product);
+					break;
+				}
+				attivitaList.forEach(attivita => {
+					product.nomiAttivita.push(attivita.nome);
+					product.footprintAttivita.push(attivita.footprint);
+				});
+
+				attivitaList = [];
+				salvaProdotto(product);
+				break;
+		 case "Back":
+				attivitaList = [];
+		        goBackByAccount();
+				break;
+
+	    }
+	});
+	
+	
 	
 }
 
-//funzioni da fare
+function inserisciAttivita(product){
+
+	inquirer.prompt(AttivitaQuestions).then((answers) => {
+		attivitaList.push(
+		{
+			"nome": answers.nomeAttivita,
+			"footprint": answers.footprintAttivita,
+		}
+		);
+		Ainserisci(product);
+	});
+	
+}
+
 
 function Pvisualizza(){
+	inquirer.prompt(MPvisualizzaQuestions).then((answers) => {
+	 	searchProdottoByLotto(answers.lotto).then(()=>{
+			goBackByAccount();
+		});
+	});
+   
 }
+
 function MPcompra(){
 	inquirer.prompt(MPcompraQuestions).then((answers) => {
 		//mancano controlli sugli input
@@ -329,6 +432,22 @@ function MPcompra(){
 
 //Interfacciamento con BlockChain
 
+async function salvaProdotto(product){
+
+	await productFactory.methods
+        .inserisciProdotto(product.lotto,product.nome,product.lottiMateriePrime,product.nomiAttivita,product.footprintAttivita)
+        .send({ from: account})
+        .then((receipt) => {
+          console.log(receipt);
+		  goBackByAccount();	  
+		  
+	}).catch((err) => {
+		console.log("Failed with error: " + err);
+		goBackByAccount();
+	});
+}
+
+
 async function acquistaMateriaPrima(lotto){
 	await productFactory.methods
         .compraMateriePrima([lotto])
@@ -356,6 +475,23 @@ async function setMateriaPrima(lotto,nome, footprint){
 		goBackByAccount();
 	});
 }
+
+async function searchProdottoByLotto(lotto){
+	  return await productFactory.methods
+            .searchProdottoByLotto(lotto)
+            .call({ from: account }).then((receipt) => {
+				console.log(" ");
+				console.log(receipt);
+				result = toJson(receipt);
+				return printNft(result,"PRODOTTO");
+				
+		  }).catch((err) => {
+		console.log("Failed with error: " + err);
+		goBackByAccount();
+	});
+	
+}
+
 
 async function searchMateriaPrimaByLotto(lotto){
 	  return await productFactory.methods
@@ -397,23 +533,18 @@ async function getNft(token){
 
 //END - Interfacciamento con BlockChain
 
-//utils
-
+//utility
 
 function printNft(nft,tipo){
 	
-	console.log(" ");
 	if(nft.lotto==""){
-		console.log(tipo+ " NON TROVATO!");
-		console.log(" ");
+		console.log("\n NFT NON TROVATO! \n");
 		return false;
 	}
-	console.log(tipo);
-	console.log(" ");
-    console.log("Lotto: " + nft.lotto);
+	console.log("\n"+tipo);
+    console.log("\nLotto: " + nft.lotto);
 	console.log("Nome: " + nft.name);
-	console.log("Footprint: " + nft.footprint);
-	console.log(" ");
+	console.log("Footprint: " + nft.footprint+"\n");
 	return true;
 }	
 
@@ -438,3 +569,4 @@ function goBackByAccount(){
 	}
 }
 
+//END - utility
