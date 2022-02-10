@@ -1,7 +1,6 @@
 const Web3 = require('web3');
 const ProductFactoryABI = require('./../Truffle/build/contracts/ProductFactory.json');
 const inquirer = require("inquirer");
-const output = [];
 const deploymentKey = Object.keys(ProductFactoryABI.networks)[0];
 
 var accounts = [];
@@ -15,9 +14,10 @@ let attivitaList = [];
 
 const NFTvisualizzaQuestions = [
   {
-    type: 'number',
+    type: 'input',
     name: 'token',
     message: "Inserisci il token da cercare",
+	validate: (answer) => checkIfInputIsNumber(answer)
   }
 
 ];
@@ -26,6 +26,7 @@ const MPvisualizzaQuestions = [
     type: 'input',
     name: 'lotto',
     message: "Inserisci il numero di lotto da cercare",
+	validate: (answer) => checkIfInputIsBlankOrNull(answer),
   }
 ];
 const MPinserisciQuestions = [
@@ -33,23 +34,27 @@ const MPinserisciQuestions = [
     type: 'input',
     name: 'lotto',
     message: "Inserisci il numero di lotto",
+	validate: (answer) => checkIfInputIsBlankOrNull(answer),
   },
   {
     type: 'input',
     name: 'nome',
     message: "Inserisci il nome",
+	validate: (answer) => checkIfInputIsBlankOrNull(answer),
   },
   {
-	 type: 'number',
+	 type: 'input',
 	 name: 'footprint',
-    message: "Inserisci il footprint della materia prima",
+	 message: "Inserisci il footprint della materia prima",
+	 validate: (answer) => checkIfInputIsNumber(answer),
   },
 ];
 const MPcompraQuestions = [
   {
     type: 'input',
     name: 'lotto',
-    message: "Inserisci il numero di lotto da cercare",
+    message: "Inserisci il numero di lotto da comprare",
+	validate: (answer) => checkIfInputIsBlankOrNull(answer),
   }
 ];
 const PinserisciQuestions = [
@@ -57,16 +62,26 @@ const PinserisciQuestions = [
     type: 'input',
     name: 'lotto',
     message: "Inserisci il numero di lotto",
+	validate: (answer) => checkIfInputIsBlankOrNull(answer),
   },
   {
     type: 'input',
     name: 'nomeProdotto',
     message: "Inserisci il nome",
+	validate: (answer) => checkIfInputIsBlankOrNull(answer),
   },
   {
     type: 'input',
     name: 'lottiMateriePrime',
     message: "Inserisci i lotti delle materie prime utilizzate (devono essere separati da una virgola e con il prefisso MP_ - Esempio: MP_01, MP_02, MP_03)",
+	validate: (answer) => {
+		answer.replace(/\s/g,'');
+		if (!(/^MP_\w+(,MP_\w+)*$/.test(answer))) {
+		  return "Errore di formattazione";
+		}
+		return checkIfInputIsBlankOrNull(answer);
+	},
+	
   },
 ];
 const AttivitaQuestions = [ 
@@ -74,11 +89,13 @@ const AttivitaQuestions = [
     type: 'input',
     name: 'nomeAttivita',
     message: "Inserisci il nome dell'attività",
+	validate: (answer) => checkIfInputIsBlankOrNull(answer),
   },
   {
     type: 'number',
     name: 'footprintAttivita',
     message: "Inserisci il carbon footprint dell'attività",
+	validate: (answer) => checkIfInputIsNumber(answer),
   }
 ]
 const compraConfirm = [
@@ -325,7 +342,7 @@ function Pinserisci(){
 		var product = {
 			lotto: answers.lotto,
 			nome: answers.nomeProdotto,
-			lottiMateriePrime: answers.lottiMateriePrime.split(','),
+			lottiMateriePrime: answers.lottiMateriePrime.replace(/\s/g,'').split(','),
 			nomiAttivita: [],
 			footprintAttivita: [],
 		};
@@ -435,7 +452,7 @@ function MPcompra(){
 async function salvaProdotto(product){
 
 	await productFactory.methods
-        .inserisciProdotto(product.lotto,product.nome,product.lottiMateriePrime,product.nomiAttivita,product.footprintAttivita)
+        .inserisciProdotto(product.lotto.trim(),product.nome.trim(),product.lottiMateriePrime,product.nomiAttivita,product.footprintAttivita)
         .send({ from: account})
         .then((receipt) => {
           console.log(receipt);
@@ -450,7 +467,7 @@ async function salvaProdotto(product){
 
 async function acquistaMateriaPrima(lotto){
 	await productFactory.methods
-        .compraMateriePrima([lotto])
+        .compraMateriePrima([lotto.trim()])
         .send({ from: account})
         .then((receipt) => {
           console.log(receipt);
@@ -464,7 +481,7 @@ async function acquistaMateriaPrima(lotto){
 
 async function setMateriaPrima(lotto,nome, footprint){
 	await productFactory.methods
-        .inserisciMateriaPrima(lotto, nome,footprint)
+        .inserisciMateriaPrima(lotto.trim(), nome.trim(),footprint.trim())
         .send({ from: account})
         .then((receipt) => {
           console.log(receipt);
@@ -478,7 +495,7 @@ async function setMateriaPrima(lotto,nome, footprint){
 
 async function searchProdottoByLotto(lotto){
 	  return await productFactory.methods
-            .searchProdottoByLotto(lotto)
+            .searchProdottoByLotto(lotto.trim())
             .call({ from: account }).then((receipt) => {
 				console.log(" ");
 				console.log(receipt);
@@ -495,7 +512,7 @@ async function searchProdottoByLotto(lotto){
 
 async function searchMateriaPrimaByLotto(lotto){
 	  return await productFactory.methods
-            .searchMateriaPrimaByLotto(lotto)
+            .searchMateriaPrimaByLotto(lotto.trim())
             .call({ from: account }).then((receipt) => {
 				console.log(" ");
 				console.log(receipt);
@@ -509,8 +526,8 @@ async function searchMateriaPrimaByLotto(lotto){
 	
 }
 async function getNft(token){
-	let tickets = await productFactory.methods
-            .getNft(token)
+	await productFactory.methods
+            .getNft(token.trim())
             .call({ from: account }).then((receipt) => {
 				console.log(" ");
 				console.log(receipt);
@@ -567,6 +584,26 @@ function goBackByAccount(){
 			menuConsumatore();
 			break;		  
 	}
+}
+
+
+function checkIfInputIsBlankOrNull(answer){
+	if (answer===null || answer=='' || /^\s+$/.test(answer)) {
+		return "Stringa non valida";
+	  }
+	  if(answer.charAt(0)==" "){
+		return "Stringa non può iniziare con il carattere space"
+	  }
+	  return true;
+}
+
+function checkIfInputIsNumber(answer){
+
+	if (isNaN(answer) || answer===null || answer=='' || /^\s+$/.test(answer)) {
+		return "Per favore inserisci un numero";
+	  }
+	return true;
+
 }
 
 //END - utility
