@@ -79,7 +79,7 @@ module.exports = {
             validate: (answer) => checkIfInputIsBlankOrNull(answer),
         },
         {
-            type: 'number',
+            type: 'input',
             name: 'footprintAttivita',
             message: "Inserisci il carbon footprint dell'attività",
             validate: (answer) => checkIfInputIsNumber(answer),
