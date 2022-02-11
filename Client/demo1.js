@@ -100,7 +100,9 @@ function menuFornitore() {
 				NFTvisualizza();
 
 				break;
-
+			case "Visualizza NFT posseduti":
+				getWallet();
+				break;	
 			case "Logout":
 				askMenuPrincipale();
 				break;
@@ -135,6 +137,9 @@ function menuProduttore() {
 				NFTvisualizza();
 
 				break;
+			case "Visualizza NFT posseduti":
+				getWallet();
+				break;	
 
 			case "Logout":
 				askMenuPrincipale();
@@ -385,6 +390,36 @@ async function searchMateriaPrimaByLotto(lotto) {
 		});
 
 }
+
+
+async function getWallet(){
+	await productFactory.methods
+		.getWallet(account)
+		.call({ from: account }).then((receipt) => {
+			myNft = receipt;
+			myNft.forEach(nft => {
+				console.log(" ");
+				console.log(nft);
+				result = toJson(nft);
+				if (result.lotto.charAt(0) == 'M') {
+					printNft(result, "MATERIA PRIMA");
+				}
+				else {
+					printNft(result, "PRODOTTO");
+				}
+			});
+			goBackByAccount();
+			
+		}).catch((err) => {
+			console.log("Failed with error: " + err);
+			goBackByAccount();
+		});
+
+
+}
+
+
+
 async function getNft(token) {
 	await productFactory.methods
 		.getNft(token.trim())
@@ -415,7 +450,7 @@ async function getNft(token) {
 function printNft(nft, tipo) {
 
 	if (nft.lotto == "") {
-		console.log("\n NFT NON TROVATO! \n");
+		console.log("\nNFT NON TROVATO! \n");
 		return false;
 	}
 	console.log("\n" + tipo);

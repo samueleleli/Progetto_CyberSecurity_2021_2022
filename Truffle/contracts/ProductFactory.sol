@@ -120,8 +120,13 @@ contract ProductFactory{
         return CarbonFootprint(nftContractAddress).searchMateriaPrimaByLotto(lotto);
     }
 
-    function getWallet(address owner) public view returns (uint[] memory){
-        return CarbonFootprint(nftContractAddress).walletOfOwner(owner);
+      function getWallet(address owner) public view returns (string[] memory){
+        uint[] memory nftTokens = CarbonFootprint(nftContractAddress).walletOfOwner(owner);
+        string[] memory nftList = new string[](nftTokens.length);
+        for(uint i=0;i< nftTokens.length;i++){
+            nftList[i] = getNft(nftTokens[i]);
+        }
+        return nftList;
     }
 
     function getNft(uint idToken) public view returns (string memory){
