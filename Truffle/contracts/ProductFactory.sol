@@ -83,6 +83,7 @@ contract ProductFactory{
         for(uint i=0;i< _lotto_materiePrime.length;i++){
             require(CarbonFootprint(nftContractAddress).existsLotto(_lotto_materiePrime[i]));
             require(CarbonFootprint(nftContractAddress).isOwner(produttore,_lotto_materiePrime[i])); //controlla se il produttore può usare quella risorsa
+            require(!(CarbonFootprint(nftContractAddress).getRisorsaUtilizzata(_lotto_materiePrime[i])));
         }
         uint footprint = 0;
 
@@ -99,6 +100,7 @@ contract ProductFactory{
 
         //calcolo del footprint totale
         for(uint i=0;i< _lotto_materiePrime.length;i++){
+            CarbonFootprint(nftContractAddress).setRisorsaUtilizzata(_lotto_materiePrime[i]);
             footprint = footprint + CarbonFootprint(nftContractAddress).getFootPrintByLotto(_lotto_materiePrime[i]);
         }
  

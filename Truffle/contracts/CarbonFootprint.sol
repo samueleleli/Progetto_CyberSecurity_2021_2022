@@ -22,7 +22,7 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
   mapping(string=>Risorsa) getRisorsaByLotto; //mapping del prodotto in base al lotto
   mapping(uint=>Risorsa) getRisorsaByTokenId;
   mapping(uint=>Risorsa) listaRisorse;
-
+  mapping(string => bool) private risorsaUtilizzata;
   mapping(string => bool) private risorsaExists;
 
   constructor(
@@ -34,6 +34,7 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
 
   // public
   function mint(address _to, string memory _lotto, uint _footprint, string memory _nome) public  {
+    require(!risorsaUtilizzata[_lotto]);
     uint256 supply = totalSupply();
     _safeMint(_to, supply+1);
     listaRisorse[supply] = Risorsa({
@@ -45,6 +46,15 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
     getRisorsaByTokenId[supply+1] = listaRisorse[supply]; 
     getRisorsaByLotto[_lotto] = listaRisorse[supply];
     risorsaExists[_lotto] = true;
+    risorsaUtilizzata[_lotto] = false;
+  }
+
+  function setRisorsaUtilizzata(string memory _lotto) public  {
+    risorsaUtilizzata[_lotto] = true;
+  }
+
+  function getRisorsaUtilizzata(string memory _lotto) public view returns (bool){
+    return risorsaUtilizzata[_lotto];
   }
 
   function walletOfOwner(address _owner)
@@ -64,7 +74,7 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
       uint tokenId = 0;
       for(uint i=0;i<lotti.length;i++){
          require(isOwner(_fornitore,lotti[i]));
-        tokenId = getRisorsaByLotto[lotti[i]].idToken;
+          tokenId = getRisorsaByLotto[lotti[i]].idToken;
          _transfer(_fornitore, _produttore,tokenId);
       }
     

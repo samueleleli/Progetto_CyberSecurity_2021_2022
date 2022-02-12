@@ -96,7 +96,7 @@ function menuFornitore() {
 				Pvisualizza();
 
 				break;
-			case "Cerca prodotto/materia prima tramite token":
+			case "Cerca NFT tramite token":
 				NFTvisualizza();
 
 				break;
@@ -133,7 +133,7 @@ function menuProduttore() {
 				MPvisualizza();
 
 				break;
-			case "Cerca prodotto/materia prima tramite token":
+			case "Cerca NFT tramite token":
 				NFTvisualizza();
 
 				break;
@@ -161,7 +161,7 @@ function menuConsumatore() {
 				MPvisualizza();
 
 				break;
-			case "Cerca prodotto/materia prima tramite token":
+			case "Cerca NFT tramite token":
 				NFTvisualizza();
 
 				break;

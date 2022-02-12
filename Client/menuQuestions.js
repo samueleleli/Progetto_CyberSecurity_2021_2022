@@ -107,7 +107,7 @@ module.exports = {
             type: "list",
             name: "decisioneForn",
             message: "Azione",
-            choices: ["Inserisci Materia Prima", "Cerca materia prima tramite il numero di lotto", "Cerca prodotto tramite il numero di lotto", "Cerca prodotto/materia prima tramite token","Visualizza NFT posseduti","Logout"]
+            choices: ["Inserisci Materia Prima", "Cerca materia prima tramite il numero di lotto", "Cerca prodotto tramite il numero di lotto", "Cerca NFT tramite token","Visualizza NFT posseduti","Logout"]
         }
     ],
     questionsMenuProduttore: [
@@ -115,7 +115,7 @@ module.exports = {
             type: "list",
             name: "decisioneProd",
             message: "Azione",
-            choices: ["Inserisci Prodotto", "Compra Materia Prima", "Cerca prodotto tramite il numero di lotto", "Cerca materia prima tramite il numero di lotto", "Cerca prodotto/materia prima tramite token","Visualizza NFT posseduti","Logout"]
+            choices: ["Inserisci Prodotto", "Compra Materia Prima", "Cerca prodotto tramite il numero di lotto", "Cerca materia prima tramite il numero di lotto", "Cerca NFT tramite token","Visualizza NFT posseduti","Logout"]
         }
     ],
     questionsMenuConsumatore: [
@@ -123,7 +123,7 @@ module.exports = {
             type: "list",
             name: "decisioneCons",
             message: "Azione",
-            choices: ["Cerca prodotto tramite il numero di lotto", "Cerca materia prima tramite il numero di lotto", "Cerca prodotto/materia prima tramite token", "Logout"]
+            choices: ["Cerca prodotto tramite il numero di lotto", "Cerca materia prima tramite il numero di lotto", "Cerca NFT tramite token", "Logout"]
         }
     ],
     questionsMenuAttivita: [
