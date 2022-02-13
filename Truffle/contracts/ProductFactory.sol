@@ -44,12 +44,12 @@ contract ProductFactory{
 
     //metodo per inserire la materia prima
     function inserisciMateriaPrima(string memory _lotto, string memory _nomeMateriaPrima, uint256 footprint) public{
-        require(msg.sender == fornitore);
+        require(msg.sender == fornitore,"Operazione non permessa");
         //condizioni di accettazione della materia prima in termini di footprint
-        require(footprint<100,"Footprint non rispetta i requisiti minimi");        
+        require(footprint<100,"Footprint non rispetta i requisiti");        
         
         string memory lotto = string(abi.encodePacked("MP_",_lotto));
-        require(! CarbonFootprint(nftContractAddress).existsLotto(lotto)); //nuovo lotto non deve esistere
+        require(! CarbonFootprint(nftContractAddress).existsLotto(lotto),string(abi.encodePacked("Il lotto ",lotto," gia' esiste!"))); //nuovo lotto non deve esistere
 
         CarbonFootprint(nftContractAddress).mint(fornitore,lotto,footprint,_nomeMateriaPrima);
         counterMateriePrime ++;  //incremento del numero delle materie prime
@@ -57,10 +57,10 @@ contract ProductFactory{
 
     //metodo per comprare le materie prime da parte del produttore
     function compraMateriePrima(string[] memory _lotti) public returns(bool) {
-        require(msg.sender == produttore);
+        require(msg.sender == produttore,"Operazione non permessa");
         //verifica dell'esistenza dei lotti
         for(uint i=0;i<_lotti.length;i++){
-            require(CarbonFootprint(nftContractAddress).existsLotto(_lotti[i]));
+            require(CarbonFootprint(nftContractAddress).existsLotto(_lotti[i]),string(abi.encodePacked("Il lotto ",_lotti[i]," non esiste")));
         }
         //passaggio di proprietà
 
@@ -75,15 +75,15 @@ contract ProductFactory{
         // _nomiAttivita = ["A","B","C"]
         // _footprintAttivita = [10, 20, 30]
         
-        require(msg.sender == produttore);
+        require(msg.sender == produttore,"Operazione non permessa");
         string memory lotto = string(abi.encodePacked("P_",_lotto));
-        require(!CarbonFootprint(nftContractAddress).existsLotto(lotto));
+        require(!CarbonFootprint(nftContractAddress).existsLotto(lotto),string(abi.encodePacked("Il lotto ",lotto," gia' esiste!")));
 
         //controllo dell'esistenza delle materie prime
         for(uint i=0;i< _lotto_materiePrime.length;i++){
-            require(CarbonFootprint(nftContractAddress).existsLotto(_lotto_materiePrime[i]));
-            require(CarbonFootprint(nftContractAddress).isOwner(produttore,_lotto_materiePrime[i])); //controlla se il produttore può usare quella risorsa
-            require(!(CarbonFootprint(nftContractAddress).getRisorsaUtilizzata(_lotto_materiePrime[i])));
+            require(CarbonFootprint(nftContractAddress).existsLotto(_lotto_materiePrime[i]),string(abi.encodePacked("Il lotto ",_lotto_materiePrime[i]," non esiste")));
+            require(CarbonFootprint(nftContractAddress).isOwner(produttore,_lotto_materiePrime[i]),string(abi.encodePacked("Non possiedi il lotto ",_lotto_materiePrime[i]))); //controlla se il produttore può usare quella risorsa
+            require(!(CarbonFootprint(nftContractAddress).getRisorsaUtilizzata(_lotto_materiePrime[i])),string(abi.encodePacked("Hai gia' utilizzato il lotto ",_lotto_materiePrime[i])));
         }
         uint footprint = 0;
 
@@ -105,7 +105,7 @@ contract ProductFactory{
         }
  
 
-        require(footprint<100);
+        require(footprint<100,"Il footprint non rispetta i requisiti");
         
         CarbonFootprint(nftContractAddress).mint(produttore,lotto,footprint,_nomeProdotto);
 

@@ -34,7 +34,7 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
 
   // public
   function mint(address _to, string memory _lotto, uint _footprint, string memory _nome) public  {
-    require(!risorsaUtilizzata[_lotto]);
+    require(!risorsaUtilizzata[_lotto],"Lotto gia' utilizzato!");
     uint256 supply = totalSupply();
     _safeMint(_to, supply+1);
     listaRisorse[supply] = Risorsa({
@@ -73,7 +73,7 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
    function compraNft(address payable _fornitore, address payable _produttore, string[] memory lotti) public{
       uint tokenId = 0;
       for(uint i=0;i<lotti.length;i++){
-         require(isOwner(_fornitore,lotti[i]));
+         require(isOwner(_fornitore,lotti[i]),string(abi.encodePacked("Non sei proprietario del lotto ",lotti[i])));
           tokenId = getRisorsaByLotto[lotti[i]].idToken;
          _transfer(_fornitore, _produttore,tokenId);
       }
