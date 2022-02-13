@@ -12,12 +12,12 @@ var produttore = "";
 var fornitore = "";
 var consumatore = "";
 let attivitaList = [];
+let questionsMenuAccount;
 
-askMenuPrincipale();
+getAccounts();
 
-//menu
-
-async function askMenuPrincipale() {
+//ottieni account e accedi al menu
+async function getAccounts() {
 	for (let i = 0; i < 3; i++) {
 		web3 = new Web3('http://localhost:2200' + i);
 		await web3.eth.getAccounts().then((value) => {
@@ -30,14 +30,21 @@ async function askMenuPrincipale() {
 	fornitore = accounts[1];
 	consumatore = accounts[2];
 	
-	const questionsMenuAccount = [
+	questionsMenuAccount = [
         {
             type: "list",
             name: "account",
-            message: "Seleziona il tuo account",
-            choices: ["Fornitore - " + fornitore,"Consumatore - " + consumatore,"Produttore - " + produttore, "EXIT"]
+            message: "Login",
+            choices: ["Fornitore - " + fornitore,"Produttore - " + produttore,"Consumatore - " + consumatore,"EXIT"]
         }
     ];
+	askMenuPrincipale();
+}
+
+
+//menu
+
+async function askMenuPrincipale() {
 
 	inquirer.prompt(questionsMenuAccount).then((answers) => {
 		switch (answers.account) {
@@ -159,6 +166,7 @@ function menuProduttore() {
 
 
 }
+
 function menuConsumatore() {
 	//può visualizzare nft, prodotti e materie prime
 	inquirer.prompt(questions.questionsMenuConsumatore).then((answers) => {
@@ -188,14 +196,13 @@ function menuConsumatore() {
 
 //funzioni locali
 
-//funzioni fatte
-
 function MPinserisci() {
 	inquirer.prompt(questions.MPinserisciQuestions).then((answers) => {
 		//mancano controlli sugli input
 		setMateriaPrima(answers.lotto, answers.nome, answers.footprint)
 	});
 }
+
 function MPvisualizza() {
 	inquirer.prompt(questions.MPvisualizzaQuestions).then((answers) => {
 		searchMateriaPrimaByLotto(answers.lotto).then(() => {
@@ -211,7 +218,6 @@ function NFTvisualizza() {
 
 }
 
-//funzioni in corso
 function Pinserisci() {
 	//inserimento attività
 	inquirer.prompt(questions.PinserisciQuestions).then((answers) => {
@@ -230,8 +236,6 @@ function Pinserisci() {
 	});
 
 }
-
-
 
 function Ainserisci(product) {
 
@@ -287,7 +291,6 @@ function inserisciAttivita(product) {
 
 }
 
-
 function Pvisualizza() {
 	inquirer.prompt(questions.MPvisualizzaQuestions).then((answers) => {
 		searchProdottoByLotto(answers.lotto).then(() => {
@@ -339,7 +342,6 @@ async function salvaProdotto(product) {
 		});
 }
 
-
 async function acquistaMateriaPrima(lotto) {
 	await productFactory.methods
 		.compraMateriePrima([lotto.trim()])
@@ -384,7 +386,6 @@ async function searchProdottoByLotto(lotto) {
 
 }
 
-
 async function searchMateriaPrimaByLotto(lotto) {
 	return await productFactory.methods
 		.searchMateriaPrimaByLotto(lotto.trim())
@@ -400,7 +401,6 @@ async function searchMateriaPrimaByLotto(lotto) {
 		});
 
 }
-
 
 async function getWallet(){
 	await productFactory.methods
@@ -427,8 +427,6 @@ async function getWallet(){
 
 
 }
-
-
 
 async function getNft(token) {
 	await productFactory.methods
@@ -469,8 +467,6 @@ function printNft(nft, tipo) {
 	console.log("Footprint: " + nft.footprint + "\n");
 	return true;
 }
-
-
 
 function toJson(receipt) {
 	var json = atob(receipt.substring(29));
