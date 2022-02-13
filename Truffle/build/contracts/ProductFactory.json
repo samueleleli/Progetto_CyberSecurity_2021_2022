@@ -27182,12 +27182,12 @@
     "10": {
       "events": {},
       "links": {},
-      "address": "0x8a5E2a6343108bABEd07899510fb42297938D41F",
-      "transactionHash": "0xea21a1bc12ee3aa85a5fd743db2fee3ae579df0d216b625b1b724353eb4eecdf"
+      "address": "0xFe0602D820f42800E3EF3f89e1C39Cd15f78D283",
+      "transactionHash": "0x14596f6a9fc1035c84cc2fdec24891d7139ec549724833a5566deb2f84f27c49"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2022-02-12T11:09:52.033Z",
+  "updatedAt": "2022-02-13T20:10:09.834Z",
   "networkType": "quorum",
   "devdoc": {
     "details": "SmartContract utilizzato per gestire i prodotti della filiera agroalimentare",

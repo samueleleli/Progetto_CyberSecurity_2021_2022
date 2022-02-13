@@ -1,8 +1,8 @@
 const Web3 = require('web3');
-const ProductFactoryABI = require('./../Truffle/build/contracts/ProductFactory.json');
+const ProductFactoryABI = require('../Truffle/build/contracts/ProductFactory.json');
 const inquirer = require("inquirer");
 const deploymentKey = Object.keys(ProductFactoryABI.networks)[0];
-var questions = require('./menuQuestions.js');
+var questions = require('./utility/menuQuestions.js');
 
 var accounts = [];
 var productFactory;
