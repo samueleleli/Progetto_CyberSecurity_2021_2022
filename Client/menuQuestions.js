@@ -60,7 +60,7 @@ module.exports = {
         {
             type: 'input',
             name: 'lottiMateriePrime',
-            message: "Inserisci i lotti delle materie prime utilizzate (devono essere separati da una virgola e con il prefisso MP_ - Esempio: MP_01, MP_02, MP_03)",
+            message: "Inserisci i lotti delle materie prime utilizzate (devono essere separati da una virgola e con il prefisso MP_ - Esempio: MP_01,MP_02,MP_03)",
             validate: (answer) => {
                 answer.replace(/\s/g, '');
                 if (!(/^MP_\w+(,MP_\w+)*$/.test(answer))) {
