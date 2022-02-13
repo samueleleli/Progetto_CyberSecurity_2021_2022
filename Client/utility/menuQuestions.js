@@ -94,14 +94,6 @@ module.exports = {
         }
     ],
 
-    questionsMenuAccount: [
-        {
-            type: "list",
-            name: "account",
-            message: "Seleziona il tuo account",
-            choices: ["Fornitore - 0xcA843569e3427144cEad5e4d5999a3D0cCF92B8e", "Produttore - 0xed9d02e382b34818e88B88a309c7fe71E65f419d", "Consumatore - 0x0fBDc686b912d7722dc86510934589E0AAf3b55A", "EXIT"]
-        }
-    ],
     questionsMenuFornitore: [
         {
             type: "list",

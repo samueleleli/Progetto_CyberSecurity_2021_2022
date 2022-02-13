@@ -29,7 +29,17 @@ async function askMenuPrincipale() {
 	produttore = accounts[0];
 	fornitore = accounts[1];
 	consumatore = accounts[2];
-	inquirer.prompt(questions.questionsMenuAccount).then((answers) => {
+	
+	const questionsMenuAccount = [
+        {
+            type: "list",
+            name: "account",
+            message: "Seleziona il tuo account",
+            choices: ["Fornitore - " + fornitore,"Consumatore - " + consumatore,"Produttore - " + produttore, "EXIT"]
+        }
+    ];
+
+	inquirer.prompt(questionsMenuAccount).then((answers) => {
 		switch (answers.account) {
 			case "Fornitore - " + fornitore:
 				console.log("\nHai selezionato l'account Fornitore, connessione al nodo in corso..\n");
