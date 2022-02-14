@@ -31353,7 +31353,7 @@
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2022-02-13T20:47:30.190Z",
+  "updatedAt": "2022-02-14T10:15:03.449Z",
   "networkType": "quorum",
   "devdoc": {
     "details": "SmartContract utilizzato per gestire i prodotti della filiera agroalimentare",
