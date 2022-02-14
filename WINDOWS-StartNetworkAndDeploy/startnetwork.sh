@@ -11,4 +11,5 @@ if ! command -v wget &> /dev/null
         echo "Cakeshop started successfully!"
     fi
 cd ../../Truffle/	
+rm -r build
 truffle migrate --network development --reset

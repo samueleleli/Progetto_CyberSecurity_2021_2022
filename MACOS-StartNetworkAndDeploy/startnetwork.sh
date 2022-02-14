@@ -12,6 +12,7 @@ Echo "localhost pronta"
 echo "deploy contratti in corso..."
 cd ../..
 cd Truffle
+rm -r build
 truffle migrate --network development --reset
 
 
