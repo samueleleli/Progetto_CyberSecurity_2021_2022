@@ -32,7 +32,7 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
   }
 
 
-  // public
+  //metodo utilizzato per mintare l'nft
   function mint(address _to, string memory _lotto, uint _footprint, string memory _nome) public  {
     require(!risorsaUtilizzata[_lotto],"Lotto gia' utilizzato!");
     uint256 supply = totalSupply();
@@ -49,14 +49,17 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
     risorsaUtilizzata[_lotto] = false;
   }
 
+  //funzione che permette di indicare l'utilizzo della risorsa
   function setRisorsaUtilizzata(string memory _lotto) public  {
     risorsaUtilizzata[_lotto] = true;
   }
 
+  //restituisce true se la risorsa è già stata utilizzata
   function getRisorsaUtilizzata(string memory _lotto) public view returns (bool){
     return risorsaUtilizzata[_lotto];
   }
 
+  //restituisce i token posseduti dall'account
   function walletOfOwner(address _owner)
     public
     view
@@ -70,20 +73,22 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
     return tokenIds;
   }
    
-   function compraNft(address payable _fornitore, address payable _produttore, string[] memory lotti) public{
-      uint tokenId = 0;
-      for(uint i=0;i<lotti.length;i++){
-         require(isOwner(_fornitore,lotti[i]),string(abi.encodePacked("Non sei proprietario del lotto ",lotti[i])));
-          tokenId = getRisorsaByLotto[lotti[i]].idToken;
-         _transfer(_fornitore, _produttore,tokenId);
-      }
+   //funzione per comprare la materia prima
+   function trasferisciNft(address payable _fornitore, address payable _produttore, string memory lotto) public{
+
+      require(isOwner(_fornitore,lotto),string(abi.encodePacked("Non sei proprietario del lotto ",lotto)));
+
+      _transfer(_fornitore, _produttore,getRisorsaByLotto[lotto].idToken);
+      
     
    }
 
+   //verifica se il lotto appartiene all'account
    function isOwner(address _account, string memory lotto) public view returns(bool){
       return _isApprovedOrOwner(_account,getRisorsaByLotto[lotto].idToken);
    }
   
+   //codifica dei dati della risorsa in base 64
    function buildMetadata(uint256 _tokenId) public view returns(string memory) {
       Risorsa memory risorsa = getRisorsaByTokenId[_tokenId];
       return string(abi.encodePacked(
@@ -97,6 +102,7 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
                           
   }
   
+  //verifica dell'esistenza del lotto
   function existsLotto(string memory _lotto) public view returns (bool){
     return risorsaExists[_lotto];
   }
@@ -107,16 +113,18 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
       return buildMetadata(risorsa.idToken);
   }
 
+  //cerca il prodotto tramite il numero di lotto
   function searchProdottoByLotto(string memory lotto) public view returns(string memory) {
         Risorsa memory risorsa = getRisorsaByLotto[string(abi.encodePacked("P_",lotto))];
         return buildMetadata(risorsa.idToken);
     }
 
+  //cerca il footprint tramite il numero di lotto
   function getFootPrintByLotto(string memory lotto) public view returns (uint256){
         return getRisorsaByLotto[lotto].footprint; 
    }
 
-
+  //conversione da intero a stringa
   function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
         if (_i == 0) {
             return "0";

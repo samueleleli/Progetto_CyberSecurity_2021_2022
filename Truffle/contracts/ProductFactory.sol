@@ -39,9 +39,6 @@ contract ProductFactory{
         nftContractAddress = _nftContractAddress;
     }
     
-    //bisogna anche inserire le attività
-
-
     //metodo per inserire la materia prima
     function inserisciMateriaPrima(string memory _lotto, string memory _nomeMateriaPrima, uint256 footprint) public{
         require(msg.sender == fornitore,"Operazione non permessa");
@@ -56,15 +53,14 @@ contract ProductFactory{
     }
 
     //metodo per comprare le materie prime da parte del produttore
-    function compraMateriePrima(string[] memory _lotti) public returns(bool) {
+    function compraMateriaPrima(string memory _lotto) public returns(bool) {
         require(msg.sender == produttore,"Operazione non permessa");
-        //verifica dell'esistenza dei lotti
-        for(uint i=0;i<_lotti.length;i++){
-            require(CarbonFootprint(nftContractAddress).existsLotto(_lotti[i]),string(abi.encodePacked("Il lotto ",_lotti[i]," non esiste")));
-        }
+        //verifica dell'esistenza del lotto
+        require(CarbonFootprint(nftContractAddress).existsLotto(_lotto),string(abi.encodePacked("Il lotto ",_lotto," non esiste")));
+        
         //passaggio di proprietà
 
-        CarbonFootprint(nftContractAddress).compraNft(fornitore,produttore,_lotti);
+        CarbonFootprint(nftContractAddress).trasferisciNft(fornitore,produttore,_lotto);
         return true;
     }
 
@@ -122,7 +118,8 @@ contract ProductFactory{
         return CarbonFootprint(nftContractAddress).searchMateriaPrimaByLotto(lotto);
     }
 
-      function getWallet(address owner) public view returns (string[] memory){
+    //ottieni materie prime possedute dall'owner
+    function getWallet(address owner) public view returns (string[] memory){
         uint[] memory nftTokens = CarbonFootprint(nftContractAddress).walletOfOwner(owner);
         string[] memory nftList = new string[](nftTokens.length);
         for(uint i=0;i< nftTokens.length;i++){
@@ -131,6 +128,8 @@ contract ProductFactory{
         return nftList;
     }
 
+
+    //metodo che permette di ottenere l'nft tramite l'id del token
     function getNft(uint idToken) public view returns (string memory){
         return CarbonFootprint(nftContractAddress).buildMetadata(idToken);
     }
