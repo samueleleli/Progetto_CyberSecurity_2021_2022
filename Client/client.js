@@ -1,4 +1,5 @@
 const Web3 = require('web3');
+const {Base64} = require('js-base64');
 const ProductFactoryABI = require('../Truffle/build/contracts/ProductFactory.json');
 const inquirer = require('inquirer');
 const deploymentKey = Object.keys(ProductFactoryABI.networks)[0];
@@ -241,7 +242,7 @@ function Ainserisci(product) {
         break;
 
       case 'Conferma definitiva dell\'inserimento del prodotto':
-        if (attivitaList.length == 0) {
+        if (attivitaList.length === 0) {
           console.log('\n La lista delle attività è vuota! \n');
           Ainserisci(product);
           break;
@@ -370,7 +371,7 @@ async function getWallet() {
   await productFactory.methods
       .getWallet(account)
       .call({from: account}).then((myNft) => {
-        if (myNft.length == 0) {
+        if (myNft.length === 0) {
           console.log('\nNON POSSIEDI NFT\n');
         } else {
           myNft.forEach((nft) => {
@@ -401,29 +402,34 @@ async function getNft(token) {
 // utility
 
 function printNft(nftBase64) {
-  const nft = toJson(nftBase64);
-  let tipo='';
+  if(Base64.isValid(nftBase64.substring(29))){
+    const nft = toJson(nftBase64);
+    let tipo='';
 
-  if (nft.lotto.charAt(0) == 'M') {
-    tipo = 'MATERIA PRIMA';
-  } else if (nft.lotto.charAt(0) == 'P') {
-    tipo = 'PRODOTTO';
-  } else {
-    console.log('\nNFT NON TROVATO! \n');
+    if (nft.lotto.charAt(0) === 'M') {
+      tipo = 'MATERIA PRIMA';
+    } else if (nft.lotto.charAt(0) === 'P') {
+      tipo = 'PRODOTTO';
+    } else {
+      console.log('\nNFT NON TROVATO! \n');
+      return false;
+    }
+
+    console.log('\n' + tipo);
+    console.log('\nData URL: '+nftBase64);
+    console.log('\nLotto: ' + nft.lotto);
+    console.log('Nome: ' + nft.name);
+    console.log('Carbon Footprint: ' + nft.footprint + '\n');
+    return true;
+  } else{
     return false;
   }
-
-  console.log('\n' + tipo);
-  console.log('\nData URL: '+nftBase64);
-  console.log('\nLotto: ' + nft.lotto);
-  console.log('Nome: ' + nft.name);
-  console.log('Footprint: ' + nft.footprint + '\n');
-  return true;
+  
 }
 
-function toJson(receipt) {
-  const json = atob(receipt.substring(29));
-  return JSON.parse(json);
+function toJson(nftBase64) {
+    const json = Base64.decode(nftBase64.substring(29));
+    return JSON.parse(json);
 }
 
 function goBackByAccount() {
