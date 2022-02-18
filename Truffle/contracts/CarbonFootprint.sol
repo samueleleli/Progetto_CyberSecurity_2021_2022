@@ -73,7 +73,7 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
    //funzione per comprare la materia prima
    function trasferisciNft(address payable _fornitore, address payable _produttore, string memory lotto) public{
 
-      require(isOwner(_fornitore,lotto),string(abi.encodePacked("Non sei proprietario del lotto ",lotto)));
+      require(isOwner(_fornitore,lotto),string(abi.encodePacked("Il fornitore non possiede il lotto ",lotto)));
 
       _transfer(_fornitore, _produttore,getRisorsaByLotto[lotto].idToken);
       

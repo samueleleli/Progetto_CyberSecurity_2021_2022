@@ -102,11 +102,11 @@ function menuFornitore() {
     switch (answers.decisioneForn) {
       case 'Inserisci Materia Prima':
         console.log('Inserisci dati della materia prima');
-        MPinserisci();
+        inserisciMateriaPrima();
 
         break;
       case 'Cerca materia prima tramite il numero di lotto':
-        MPvisualizza();
+        visualizzaMateriaPrima();
 
         break;
       case 'Cerca prodotto tramite il numero di lotto':
@@ -114,7 +114,7 @@ function menuFornitore() {
 
         break;
       case 'Cerca NFT tramite token':
-        NFTvisualizza();
+        visualizzaNFT();
 
         break;
       case 'Visualizza NFT posseduti':
@@ -135,7 +135,7 @@ function menuProduttore() {
     switch (answers.decisioneProd) {
       case 'Inserisci Prodotto':
         console.log('\n PASSO 1: inserimento dei dati del prodotto: \n');
-        Pinserisci();
+        inserisciProdotto();
 
         break;
       case 'Compra Materia Prima':
@@ -147,11 +147,11 @@ function menuProduttore() {
 
         break;
       case 'Cerca materia prima tramite il numero di lotto':
-        MPvisualizza();
+        visualizzaMateriaPrima();
 
         break;
       case 'Cerca NFT tramite token':
-        NFTvisualizza();
+        visualizzaNFT();
 
         break;
       case 'Visualizza NFT posseduti':
@@ -174,11 +174,11 @@ function menuConsumatore() {
 
         break;
       case 'Cerca materia prima tramite il numero di lotto':
-        MPvisualizza();
+        visualizzaMateriaPrima();
 
         break;
       case 'Cerca NFT tramite token':
-        NFTvisualizza();
+        visualizzaNFT();
 
         break;
 
@@ -193,26 +193,26 @@ function menuConsumatore() {
 
 // funzioni locali
 
-function MPinserisci() {
+function inserisciMateriaPrima() {
   inquirer.prompt(questions.MPinserisciQuestions).then((answers) => {
     setMateriaPrima(answers.lotto, answers.nome, answers.footprint);
   });
 }
 
-function MPvisualizza() {
+function visualizzaMateriaPrima() {
   inquirer.prompt(questions.MPvisualizzaQuestions).then((answers) => {
     searchMateriaPrimaByLotto(answers.lotto).then(() => {
       goBackByAccount();
     });
   });
 }
-function NFTvisualizza() {
+function visualizzaNFT() {
   inquirer.prompt(questions.NFTvisualizzaQuestions).then((answers) => {
     getNft(answers.token);
   });
 }
 
-function Pinserisci() {
+function inserisciProdotto() {
   // inserimento attività
   inquirer.prompt(questions.PinserisciQuestions).then((answers) => {
     // lottiMateriePrime = answers.lottiMateriePrime+','
@@ -224,11 +224,11 @@ function Pinserisci() {
       footprintAttivita: [],
     };
     console.log('\n PASSO 2: inserimento dei footprint delle attività: \n');
-    Ainserisci(product);
+    inserisciA(product);
   });
 }
 
-function Ainserisci(product) {
+function inserisciA(product) {
   // inserimento attività
   inquirer.prompt(questions.questionsMenuAttivita).then((answers) => {
     switch (answers.decisioneAttivita) {
@@ -238,13 +238,13 @@ function Ainserisci(product) {
         break;
       case 'Visualizza tutte le Attività':
         console.log(attivitaList);
-        Ainserisci(product);
+        inserisciA(product);
         break;
 
       case 'Conferma definitiva dell\'inserimento del prodotto':
         if (attivitaList.length === 0) {
           console.log('\n La lista delle attività è vuota! \n');
-          Ainserisci(product);
+          inserisciA(product);
           break;
         }
         attivitaList.forEach((attivita) => {
@@ -271,7 +271,7 @@ function inserisciAttivita(product) {
           'footprint': answers.footprintAttivita,
         },
     );
-    Ainserisci(product);
+    inserisciA(product);
   });
 }
 
@@ -333,7 +333,7 @@ async function acquistaMateriaPrima(lotto) {
 }
 
 async function setMateriaPrima(lotto, nome, footprint) {
-  await productFactory.methods
+  await productFactory.methods 
       .inserisciMateriaPrima(lotto.trim(), nome.trim(), footprint.trim())
       .send({from: account})
       .then((receipt) => {

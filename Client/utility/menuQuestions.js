@@ -13,7 +13,7 @@ module.exports = {
             type: 'input',
             name: 'lotto',
             message: "Inserisci il numero di lotto da cercare",
-            validate: (answer) => checkIfInputIsBlankOrNull(answer),
+            validate: (answer) => checkIfInputContainsBlank(answer),
         }
     ],
     MPinserisciQuestions: [
@@ -21,7 +21,7 @@ module.exports = {
             type: 'input',
             name: 'lotto',
             message: "Inserisci il numero di lotto",
-            validate: (answer) => checkIfInputIsBlankOrNull(answer),
+            validate: (answer) => checkIfInputContainsBlank(answer),
         },
         {
             type: 'input',
@@ -41,7 +41,7 @@ module.exports = {
             type: 'input',
             name: 'lotto',
             message: "Inserisci il numero di lotto da comprare",
-            validate: (answer) => checkIfInputIsBlankOrNull(answer),
+            validate: (answer) => checkIfInputContainsBlank(answer),
         }
     ],
     PinserisciQuestions: [
@@ -49,7 +49,7 @@ module.exports = {
             type: 'input',
             name: 'lotto',
             message: "Inserisci il numero di lotto",
-            validate: (answer) => checkIfInputIsBlankOrNull(answer),
+            validate: (answer) => checkIfInputContainsBlank(answer),
         },
         {
             type: 'input',
@@ -66,7 +66,7 @@ module.exports = {
                 if (!(/^MP_\w+(,MP_\w+)*$/.test(answer))) {
                     return "Errore di formattazione";
                 }
-                return checkIfInputIsBlankOrNull(answer);
+                return checkIfInputContainsBlank(answer);
             }
 
         },
@@ -128,6 +128,13 @@ module.exports = {
     ],
     //etc
 }
+function checkIfInputContainsBlank(answer){
+    if (answer === null || answer == '' || /\s/g.test(answer)){
+        return "Il numero di lotto non può contene il carattere space"
+    }
+    return true;
+}
+
 
 function checkIfInputIsBlankOrNull(answer) {
     if (answer === null || answer == '' || /^\s+$/.test(answer)) {
