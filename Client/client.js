@@ -4,89 +4,46 @@ const ProductFactoryABI = require('../Truffle/build/contracts/ProductFactory.jso
 const inquirer = require('inquirer');
 const deploymentKey = Object.keys(ProductFactoryABI.networks)[0];
 const questions = require('./utility/menuQuestions.js');
+const Network = require('./proxies/Network.js').instance;
 
 let productFactory;
 let account;
 let web3;
-let produttore = '';
-let fornitore = '';
-let consumatore = '';
 let attivitaList = [];
-let questionsMenuAccount;
 
-getAccounts();
+const questionsMenuAccount = [
+  {
+    type: 'list',
+    name: 'account',
+    message: 'Login',
+    choices: ['Fornitore - ' + Network.fornitore, 'Produttore - ' + Network.produttore, 'Consumatore - ' + Network.consumatore, 'EXIT'],
+  },
+];
 
-// ottieni account e accedi al menu
-async function getAccounts() {
-  const accounts = [];
-  for (let i = 0; i < 3; i++) {
-    web3 = new Web3('http://localhost:2200' + i);
-    await web3.eth.getAccounts().then((value) => {
-      accounts.push(value[0]);
-    }).catch(() => {
-      console.log('Si è verificato un errore!');
-    });
-  }
-
-  produttore = accounts[0];
-  fornitore = accounts[1];
-  consumatore = accounts[2];
-
-  questionsMenuAccount = [
-    {
-      type: 'list',
-      name: 'account',
-      message: 'Login',
-      choices: ['Fornitore - ' + fornitore, 'Produttore - ' + produttore, 'Consumatore - ' + consumatore, 'EXIT'],
-    },
-  ];
-  askMenuPrincipale();
-}
-
+askMenuPrincipale();
 
 // menu
 
 async function askMenuPrincipale() {
   inquirer.prompt(questionsMenuAccount).then((answers) => {
     switch (answers.account) {
-      case 'Fornitore - ' + fornitore:
+      case 'Fornitore - ' + Network.fornitore:
         console.log('\nHai selezionato l\'account Fornitore, connessione al nodo in corso..\n');
-        web3 = new Web3('http://localhost:22001');
-        productFactory = new web3.eth.Contract(
-            ProductFactoryABI.abi,
-            ProductFactoryABI.networks[deploymentKey].address,
-            {transactionConfirmationBlocks: 5},
-        );
-        account = fornitore;
+        connect("1");
+        account = Network.fornitore;
         menuFornitore();
-
-
         break;
-      case 'Produttore - ' + produttore:
+      case 'Produttore - ' + Network.produttore:
         console.log('\nHai selezionato l\'account Produttore, connessione al nodo in corso..\n');
-        web3 = new Web3('http://localhost:22000');
-        productFactory = new web3.eth.Contract(
-            ProductFactoryABI.abi,
-            ProductFactoryABI.networks[deploymentKey].address,
-            {transactionConfirmationBlocks: 5},
-        );
-        account = produttore;
+        connect("0");
+        account = Network.produttore;
         menuProduttore();
-
-
         break;
-      case 'Consumatore - ' + consumatore:
+      case 'Consumatore - ' + Network.consumatore:
         console.log('\nHai selezionato l\'account Consumatore, connessione al nodo in corso..\n');
-        web3 = new Web3('http://localhost:22002');
-        productFactory = new web3.eth.Contract(
-            ProductFactoryABI.abi,
-            ProductFactoryABI.networks[deploymentKey].address,
-            {transactionConfirmationBlocks: 5},
-        );
-        account = consumatore;
+        connect("2");
+        account = Network.consumatore;
         menuConsumatore();
-
-
         break;
       case 'EXIT':
         return 0;
@@ -434,16 +391,26 @@ function toJson(nftBase64) {
 
 function goBackByAccount() {
   switch (account) {
-    case fornitore:
+    case Network.fornitore:
       menuFornitore();
       break;
-    case produttore:
+    case Network.produttore:
       menuProduttore();
       break;
-    case consumatore:
+    case Network.consumatore:
       menuConsumatore();
       break;
   }
+}
+
+function connect(n){
+  web3 = new Web3('http://localhost:2200'+n);  
+  productFactory = new web3.eth.Contract(
+    ProductFactoryABI.abi,
+    ProductFactoryABI.networks[deploymentKey].address,
+    {transactionConfirmationBlocks: 5},
+  );
+
 }
 
 // END - utility

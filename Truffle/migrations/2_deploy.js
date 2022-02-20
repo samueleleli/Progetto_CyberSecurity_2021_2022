@@ -1,4 +1,5 @@
 const Web3 = require('web3');
+const fs = require('fs');
 var web3;
 var accounts=[];
 
@@ -7,12 +8,18 @@ var Base64 = artifacts.require("Base64");
 var CarbonFootprint = artifacts.require("CarbonFootprint");
 
 module.exports = async function (deployer) {
-
+  fs.writeFileSync("../Client/proxies/accounts.txt","");
+    
   //ottengo gli address
   for (let i = 0; i < 3; i++) {
     web3 = new Web3('http://localhost:2200' + i);
     await web3.eth.getAccounts().then((value) => {
       accounts.push(value[0]);
+        fs.writeFileSync("../Client/proxies/accounts.txt", value[0] + "\n", {
+        encoding: "utf8",
+        flag: "a+",
+        mode: 0o666
+      });
     }).catch(() => {
       console.log("Si è verificato un errore!")
     });
