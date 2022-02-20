@@ -147,7 +147,9 @@ function checkIfInputIsBlankOrNull(answer) {
 }
 
 function checkIfInputIsNumber(answer) {
-
+    if(answer.toString().indexOf('.') != -1){
+        return "I numeri in virgola mobile non sono ammessi";
+    }
     if (isNaN(answer) || answer === null || answer == '' || /^\s+$/.test(answer)) {
         return "Per favore inserisci un numero";
     }
