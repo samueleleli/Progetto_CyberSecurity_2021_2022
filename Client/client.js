@@ -1,10 +1,8 @@
 const Web3 = require('web3');
-const {Base64} = require('js-base64');
-const ProductFactoryABI = require('../Truffle/build/contracts/ProductFactory.json');
 const inquirer = require('inquirer');
-const deploymentKey = Object.keys(ProductFactoryABI.networks)[0];
 const questions = require('./utility/menuQuestions.js');
 const Network = require('./proxies/Network.js').instance;
+const nftProcess = require('./utility/nftProcess.js');
 
 let productFactory;
 let account;
@@ -67,7 +65,7 @@ function menuFornitore() {
 
         break;
       case 'Cerca prodotto tramite il numero di lotto':
-        Pvisualizza();
+        visualizzaProdotto();
 
         break;
       case 'Cerca NFT tramite token':
@@ -96,11 +94,11 @@ function menuProduttore() {
 
         break;
       case 'Compra Materia Prima':
-        MPcompra();
+        compraMateriaPrima();
 
         break;
       case 'Cerca prodotto tramite il numero di lotto':
-        Pvisualizza();
+        visualizzaProdotto();
 
         break;
       case 'Cerca materia prima tramite il numero di lotto':
@@ -127,7 +125,7 @@ function menuConsumatore() {
   inquirer.prompt(questions.questionsMenuConsumatore).then((answers) => {
     switch (answers.decisioneCons) {
       case 'Cerca prodotto tramite il numero di lotto':
-        Pvisualizza();
+        visualizzaProdotto();
 
         break;
       case 'Cerca materia prima tramite il numero di lotto':
@@ -232,7 +230,7 @@ function inserisciAttivita(product) {
   });
 }
 
-function Pvisualizza() {
+function visualizzaProdotto() {
   inquirer.prompt(questions.MPvisualizzaQuestions).then((answers) => {
     searchProdottoByLotto(answers.lotto).then(() => {
       goBackByAccount();
@@ -240,7 +238,7 @@ function Pvisualizza() {
   });
 }
 
-function MPcompra() {
+function compraMateriaPrima() {
   inquirer.prompt(questions.MPcompraQuestions).then((answers) => {
     searchMateriaPrimaByLotto(answers.lotto).then((find) => {
       const lotto = answers.lotto;
@@ -306,7 +304,7 @@ async function searchProdottoByLotto(lotto) {
   return await productFactory.methods
       .searchProdottoByLotto(lotto.trim())
       .call({from: account}).then((receipt) => {
-        return printNft(receipt);
+        return nftProcess.printNft(receipt);
       }).catch((err) => {
         console.log('Failed with error: ' + err);
         goBackByAccount();
@@ -317,7 +315,7 @@ async function searchMateriaPrimaByLotto(lotto) {
   return await productFactory.methods
       .searchMateriaPrimaByLotto(lotto.trim())
       .call({from: account}).then((receipt) => {
-        return printNft(receipt);
+        return nftProcess.printNft(receipt);
       }).catch((err) => {
         console.log('Failed with error: ' + err);
         goBackByAccount();
@@ -332,7 +330,7 @@ async function getWallet() {
           console.log('\nNON POSSIEDI NFT\n');
         } else {
           myNft.forEach((nft) => {
-            printNft(nft);
+            nftProcess.printNft(nft);
           });
         }
         goBackByAccount();
@@ -346,7 +344,7 @@ async function getNft(token) {
   await productFactory.methods
       .getNft(token.trim())
       .call({from: account}).then((receipt) => {
-        printNft(receipt);
+        nftProcess.printNft(receipt);
         goBackByAccount();
       }).catch((err) => {
         console.log('Failed with error: ' + err);
@@ -357,38 +355,6 @@ async function getNft(token) {
 // END - Interfacciamento con BlockChain
 
 // utility
-
-function printNft(nftBase64) {
-  if(Base64.isValid(nftBase64.substring(29))){
-    const nft = toJson(nftBase64);
-    let tipo='';
-
-    if (nft.lotto.charAt(0) === 'M') {
-      tipo = 'MATERIA PRIMA';
-    } else if (nft.lotto.charAt(0) === 'P') {
-      tipo = 'PRODOTTO';
-    } else {
-      console.log('\nNFT NON TROVATO! \n');
-      return false;
-    }
-    
-    console.log('\n' + tipo);
-    console.log('\nData URL: '+nftBase64);
-    console.log('\nToken: ' + nft.token);
-    console.log('Lotto: ' + nft.lotto);
-    console.log('Nome: ' + nft.name);
-    console.log('Carbon Footprint: ' + nft.footprint + '\n');
-    return true;
-  } else{
-    return false;
-  }
-  
-}
-
-function toJson(nftBase64) {
-    const json = Base64.decode(nftBase64.substring(29));
-    return JSON.parse(json);
-}
 
 function goBackByAccount() {
   switch (account) {
@@ -407,8 +373,8 @@ function goBackByAccount() {
 function connect(n){
   web3 = new Web3('http://localhost:2200'+n);  
   productFactory = new web3.eth.Contract(
-    ProductFactoryABI.abi,
-    ProductFactoryABI.networks[deploymentKey].address,
+    Network.ProductFactoryABI.abi,
+    Network.ProductFactoryABI.networks[Network.deploymentKey].address,
     {transactionConfirmationBlocks: 5},
   );
 
