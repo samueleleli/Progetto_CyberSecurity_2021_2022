@@ -371,10 +371,11 @@ function printNft(nftBase64) {
       console.log('\nNFT NON TROVATO! \n');
       return false;
     }
-
+    
     console.log('\n' + tipo);
     console.log('\nData URL: '+nftBase64);
-    console.log('\nLotto: ' + nft.lotto);
+    console.log('\nToken: ' + nft.token);
+    console.log('Lotto: ' + nft.lotto);
     console.log('Nome: ' + nft.name);
     console.log('Carbon Footprint: ' + nft.footprint + '\n');
     return true;

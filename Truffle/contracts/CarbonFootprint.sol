@@ -90,7 +90,9 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
       Risorsa memory risorsa = getRisorsaByTokenId[_tokenId];
       return string(abi.encodePacked(
               'data:application/json;base64,', Base64.encode(bytes(abi.encodePacked(
-                          '{"name":"', 
+                          '{"token":', 
+                          uint2str(risorsa.idToken),
+                          ',"name":"', 
                           risorsa.nome,
                           '","lotto":"', 
                           risorsa.lotto,
