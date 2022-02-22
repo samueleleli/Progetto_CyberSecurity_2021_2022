@@ -93,6 +93,14 @@ module.exports = {
             default: false
         }
     ],
+    attivitaConfirm: [
+        {
+            type: 'confirm',
+            name: 'decisione',
+            message: "Vuoi visualizzare anche le attività di lavorazione e le materie prime utilizzate?",
+            default: true
+        }
+    ],
 
     questionsMenuFornitore: [
         {

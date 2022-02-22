@@ -26,6 +26,16 @@ module.exports = {
             return false;
           }
     },
+
+    printAttivita: function (nomiAttivita,footprint,lottiMateriePrime){
+      console.log('\nLotti delle materie prime utilizzate: '+lottiMateriePrime);
+      console.log('\nAttività di lavorazione: \n');
+      for(var i=0;i<nomiAttivita.length;i++){
+        console.log('Nome Attività: '+nomiAttivita[i]);
+        console.log('Carbon Footprint: ' + footprint[i]+'\n');
+      }
+      return true;
+    }
     
 };
 

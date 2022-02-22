@@ -232,8 +232,19 @@ function inserisciAttivita(product) {
 
 function visualizzaProdotto() {
   inquirer.prompt(questions.MPvisualizzaQuestions).then((answers) => {
-    searchProdottoByLotto(answers.lotto).then(() => {
-      goBackByAccount();
+    searchProdottoByLotto(answers.lotto).then((find) => {
+      if(find){
+        var lotto = answers.lotto;
+        inquirer.prompt(questions.attivitaConfirm).then((answers) => {
+          if (answers.decisione) {
+            return getListaAttivitaMP(lotto.trim());
+          } else {
+            goBackByAccount();
+          }
+        });
+      } else{
+        goBackByAccount();
+      }
     });
   });
 }
@@ -301,7 +312,7 @@ async function setMateriaPrima(lotto, nome, footprint) {
 }
 
 async function searchProdottoByLotto(lotto) {
-  return await productFactory.methods
+   return await productFactory.methods
       .searchProdottoByLotto(lotto.trim())
       .call({from: account}).then((receipt) => {
         return nftProcess.printNft(receipt);
@@ -345,6 +356,18 @@ async function getNft(token) {
       .getNft(token.trim())
       .call({from: account}).then((receipt) => {
         nftProcess.printNft(receipt);
+        goBackByAccount();
+      }).catch((err) => {
+        console.log('Failed with error: ' + err);
+        goBackByAccount();
+      });
+}
+
+async function getListaAttivitaMP(lotto){
+  await productFactory.methods
+      .visualizzaAttivitaDiLavorazione(lotto)
+      .call({from: account}).then((receipt) => {
+        nftProcess.printAttivita(receipt[0],receipt[1],receipt[2]);
         goBackByAccount();
       }).catch((err) => {
         console.log('Failed with error: ' + err);

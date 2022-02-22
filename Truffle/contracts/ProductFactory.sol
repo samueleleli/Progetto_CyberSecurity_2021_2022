@@ -10,12 +10,14 @@ import "./CarbonFootprint.sol";
 contract ProductFactory{
 
     struct Attivita{
-        string nomeAttivita;
-        uint256 footprint;
+        string[] nomiAttivita;
+        uint256[] footprint;
         string lotto;
+        string[] lottiMateriePrime;
     }
 
     mapping(uint=>Attivita) listaAttivita;
+    mapping(string=>Attivita) getListaAttivitaByLotto;
     
     //indirizzi
     address payable produttore;
@@ -26,7 +28,6 @@ contract ProductFactory{
     //contatori
     uint256 counterMateriePrime;
     uint256 counterProdotti;
-    uint256 counterAttivita;
 
     //INIT
     constructor (address payable _produttore, address payable _fornitore, address payable _consumatore,address payable _nftContractAddress){
@@ -35,15 +36,12 @@ contract ProductFactory{
         consumatore = _consumatore;
         counterMateriePrime = 0;
         counterProdotti = 0;
-        counterAttivita = 0;
         nftContractAddress = _nftContractAddress;
     }
     
     //metodo per inserire la materia prima
     function inserisciMateriaPrima(string memory _lotto, string memory _nomeMateriaPrima, uint256 footprint) public{
         require(msg.sender == fornitore,"Operazione non permessa");
-        //condizioni di accettazione della materia prima in termini di footprint
-        require(footprint<100,"Footprint non rispetta i requisiti");        
         
         string memory lotto = string(abi.encodePacked("MP_",_lotto));
         require(! CarbonFootprint(nftContractAddress).existsLotto(lotto),string(abi.encodePacked("Il lotto ",lotto," gia' esiste!"))); //nuovo lotto non deve esistere
@@ -71,7 +69,11 @@ contract ProductFactory{
         // _nomiAttivita = ["A","B","C"]
         // _footprintAttivita = [10, 20, 30]
         
+        //controlli
         require(msg.sender == produttore,"Operazione non permessa");
+        require(_lotto_materiePrime.length>0,"Deve essere inserita almeno una materia prima'");
+        require(_footprintAttivita.length>0 && _nomiAttivita.length>0,"Deve essere inserita almeno un'attivita'");
+        require(_footprintAttivita.length == _nomiAttivita.length,"I 2 vettori hanno lunghezza diversa");
         string memory lotto = string(abi.encodePacked("P_",_lotto));
         require(!CarbonFootprint(nftContractAddress).existsLotto(lotto),string(abi.encodePacked("Il lotto ",lotto," gia' esiste!")));
 
@@ -83,14 +85,8 @@ contract ProductFactory{
         }
         uint footprint = 0;
 
-        //salvaAttivita
+        //calcolo footprint attivita
         for(uint i=0; i<_nomiAttivita.length; i++){
-            listaAttivita[counterAttivita] = Attivita({
-                nomeAttivita: _nomiAttivita[i],
-                footprint: _footprintAttivita[i],
-                lotto: lotto
-            });
-            counterAttivita++;
             footprint = footprint + _footprintAttivita[i];
         }
 
@@ -99,13 +95,20 @@ contract ProductFactory{
             CarbonFootprint(nftContractAddress).setRisorsaUtilizzata(_lotto_materiePrime[i]);
             footprint = footprint + CarbonFootprint(nftContractAddress).getFootPrintByLotto(_lotto_materiePrime[i]);
         }
- 
 
-        require(footprint<100,"Il footprint non rispetta i requisiti");
+        //inserimento dell'attività
+        listaAttivita[counterProdotti] = Attivita({
+                nomiAttivita: _nomiAttivita,
+                footprint: _footprintAttivita,
+                lottiMateriePrime: _lotto_materiePrime,
+                lotto: lotto
+        });
+
+        getListaAttivitaByLotto[lotto] = listaAttivita[counterProdotti];
         
         CarbonFootprint(nftContractAddress).mint(produttore,lotto,footprint,_nomeProdotto);
 
-        counterProdotti ++; //incremento del numero dei prodotti inseriti
+        counterProdotti++; //incremento del numero dei prodotti inseriti
     }
 
     //cerca il prodotto in base al numero di lotto
@@ -134,4 +137,8 @@ contract ProductFactory{
         return CarbonFootprint(nftContractAddress).buildMetadata(idToken);
     }
 
+    function visualizzaAttivitaDiLavorazione(string memory _lotto) public view returns (string[] memory,uint256[] memory,string[] memory){
+        Attivita memory attivita = getListaAttivitaByLotto[string(abi.encodePacked("P_",_lotto))];
+        return (attivita.nomiAttivita,attivita.footprint,attivita.lottiMateriePrime);
+    }
 }
