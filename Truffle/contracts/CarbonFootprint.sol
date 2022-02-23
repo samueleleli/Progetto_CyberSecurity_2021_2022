@@ -75,7 +75,7 @@ contract CarbonFootprint is ERC721Enumerable, Ownable {
 
       require(isOwner(_fornitore,lotto),string(abi.encodePacked("Il fornitore non possiede il lotto ",lotto)));
 
-      _transfer(_fornitore, _produttore,getRisorsaByLotto[lotto].idToken);
+      safeTransferFrom(_fornitore, _produttore,getRisorsaByLotto[lotto].idToken);
       
     
    }

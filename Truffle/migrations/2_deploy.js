@@ -25,9 +25,29 @@ module.exports = async function (deployer) {
     });
   }
 
+ 
+
   //deploy
   deployer.deploy(Base64)
   await deployer.deploy(CarbonFootprint,"Prodotti","PRD").then(function () {
-    return deployer.deploy(ProductFactory,accounts[0],accounts[1],accounts[2], CarbonFootprint.address);
+    return deployer.deploy(ProductFactory,accounts[0],accounts[1],accounts[2], CarbonFootprint.address).then(function (){
+      web3 = new Web3('http://localhost:22001'); 
+      let nftContract = new web3.eth.Contract(
+          CarbonFootprint.abi,
+          CarbonFootprint.address,
+          {transactionConfirmationBlocks: 5},
+      );
+      //lo smart contract in questo modo può trasferire gli NFT
+      return nftContract.methods
+      .setApprovalForAll(ProductFactory.address,true)
+      .send({from: accounts[1]}).then((receipt) => {
+        console.log("MIGRAZIONE AVVENUTA CON SUCCESSO");
+      }).catch((err) => {
+        console.log('Failed with error: ' + err);
+      });
+    });
   })
+  
+       
+      
 }
