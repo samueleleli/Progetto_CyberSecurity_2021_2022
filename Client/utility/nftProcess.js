@@ -1,3 +1,4 @@
+//contenitore dei metodi per la gestione e la stampa dei dati decodificati da base64.
 const Base64 = require('js-base64');
 module.exports = {
     

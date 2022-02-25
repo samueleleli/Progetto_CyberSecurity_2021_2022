@@ -1,3 +1,4 @@
+//contenitore delle voci dei vari menu utilizzati nella Dapp + validazione e sanificazione degli input
 module.exports = {
     NFTvisualizzaQuestions: [
         {
