@@ -12,10 +12,6 @@ const questionsMenuAccount = [
   },
 ];
 
-let attivitaList = []; //vettore che contiene le attività di lavorazione del prodotto
-
-askMenuPrincipale();
-
 // START - menu
 
 async function askMenuPrincipale() {
@@ -352,3 +348,8 @@ function goBackByAccount() {
 }
 
 // END - utility
+
+let attivitaList = []; //vettore che contiene le attività di lavorazione del prodotto
+
+askMenuPrincipale();
+
