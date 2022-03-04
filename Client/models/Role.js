@@ -1,10 +1,10 @@
 //classe per l'assegnamento dei ruoli
+const json= require('./../models/accounts.json'); 
 class Role {
   constructor() {
-    var accounts = require('fs').readFileSync("./models/accounts.txt", 'utf-8').split('\n');
-    this.produttore = accounts[0];
-    this.fornitore = accounts[1];
-    this.consumatore = accounts[2];
+      this.produttore = {address: json[0].address, node: json[0].node};
+      this.fornitore = {address: json[1].address, node: json[1].node};
+      this.consumatore = {address: json[2].address, node: json[2].node};
   }
 }
 

@@ -8,7 +8,7 @@ const questionsMenuAccount = [
     type: 'list',
     name: 'account',
     message: 'Login',
-    choices: ['Fornitore - ' + user.fornitore, 'Produttore - ' + user.produttore, 'Consumatore - ' + user.consumatore, 'EXIT'],
+    choices: ['Fornitore - ' + user.fornitore.address, 'Produttore - ' + user.produttore.address, 'Consumatore - ' + user.consumatore.address, 'EXIT'],
   },
 ];
 
@@ -17,22 +17,19 @@ const questionsMenuAccount = [
 async function askMenuPrincipale() {
   inquirer.prompt(questionsMenuAccount).then((answers) => {
     switch (answers.account) {
-      case 'Fornitore - ' + user.fornitore:
+      case 'Fornitore - ' + user.fornitore.address:
         console.log('\nHai selezionato l\'account Fornitore, connessione al nodo in corso..\n');
-        user.connect("1");
-        user.changeAccount = user.fornitore;
+        user.changeAccount = user.fornitore.address;
         menuFornitore();
         break;
-      case 'Produttore - ' + user.produttore:
+      case 'Produttore - ' + user.produttore.address:
         console.log('\nHai selezionato l\'account Produttore, connessione al nodo in corso..\n');
-        user.connect("0");
-        user.changeAccount = user.produttore;
+        user.changeAccount = user.produttore.address;
         menuProduttore();
         break;
-      case 'Consumatore - ' + user.consumatore:
+      case 'Consumatore - ' + user.consumatore.address:
         console.log('\nHai selezionato l\'account Consumatore, connessione al nodo in corso..\n');
-        user.connect("2");
-        user.changeAccount = user.consumatore;
+        user.changeAccount = user.consumatore.address;
         menuConsumatore();
         break;
       case 'EXIT':
@@ -163,34 +160,29 @@ function inserisciAMenu(product) {
 
         break;
       case 'Visualizza tutte le Attività':
-        console.log(attivitaList);
+        console.log(product.listaAttivita);
         inserisciAMenu(product);
         break;
 
       case 'Conferma definitiva dell\'inserimento del prodotto':
-        if (attivitaList.length === 0) {
+        if (product.listaAttivita.length === 0) {
           console.log('\n La lista delle attività è vuota! \n');
           inserisciAMenu(product);
           break;
         }
-        attivitaList.forEach((attivita) => {
-          product.nomiAttivita.push(attivita.nome);
-          product.footprintAttivita.push(attivita.footprint);
-        });
-
-        attivitaList = [];
-      
+        
         user.salvaProdotto(product).then((receipt) => {
           console.log(receipt);
           goBackByAccount();
         }).catch((err) => {
           console.log('Failed with error: ' + err);
+          product.listaAttivita = [];
           goBackByAccount();
         });   
 
         break;
       case 'Back':
-        attivitaList = [];
+        product.listaAttivita = [];
         goBackByAccount();
         break;
     }
@@ -199,11 +191,11 @@ function inserisciAMenu(product) {
 
 function inserisciAttivita(product) {
   inquirer.prompt(questions.AttivitaQuestions).then((answers) => {
-    attivitaList.push(
-        {
-          'nome': answers.nomeAttivita,
-          'footprint': answers.footprintAttivita,
-        },
+    product.listaAttivita.push(
+      {
+        'nome': answers.nomeAttivita,
+        'footprint': answers.footprintAttivita,
+      },
     );
     inserisciAMenu(product);
   });
@@ -255,12 +247,11 @@ function inserisciProdotto() {
   // inserimento attività
   inquirer.prompt(questions.PinserisciQuestions).then((answers) => {
     // lottiMateriePrime = answers.lottiMateriePrime+','
-    const product = {
+    var product = {
       lotto: answers.lotto,
       nome: answers.nomeProdotto,
       lottiMateriePrime: answers.lottiMateriePrime.replace(/\s/g, '').split(','),
-      nomiAttivita: [],
-      footprintAttivita: [],
+      listaAttivita: [],
     };
     console.log('\n PASSO 2: inserimento dei footprint delle attività: \n');
     inserisciAMenu(product);
@@ -334,22 +325,20 @@ function compraMateriaPrima() {
 // utility
 
 function goBackByAccount() {
-  switch (user.account) {
-    case user.fornitore:
+  switch (user.account.address) {
+    case user.fornitore.address:
       menuFornitore();
       break;
-    case user.produttore:
+    case user.produttore.address:
       menuProduttore();
       break;
-    case user.consumatore:
+    case user.consumatore.address:
       menuConsumatore();
       break;
   }
 }
 
 // END - utility
-
-let attivitaList = []; //vettore che contiene le attività di lavorazione del prodotto
 
 askMenuPrincipale();
 
