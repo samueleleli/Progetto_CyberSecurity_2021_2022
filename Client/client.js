@@ -48,13 +48,13 @@ function menuFornitore() {
         console.log('Inserisci dati della materia prima');
         inserisciMateriaPrima();
         break;
-      case 'Cerca materia prima tramite il numero di lotto':
+      case 'Cerca materia prima tramite il codice di lotto':
         visualizzaMateriaPrima();
         break;
-      case 'Cerca prodotto tramite il numero di lotto':
+      case 'Cerca prodotto tramite il codice di lotto':
         visualizzaProdotto();
         break;
-      case 'Cerca NFT tramite token':
+      case 'Cerca NFT tramite ID':
         visualizzaNFT();
         break;
       case 'Visualizza NFT posseduti':
@@ -93,13 +93,13 @@ function menuProduttore() {
       case 'Compra Materia Prima':
         compraMateriaPrima();
         break;
-      case 'Cerca prodotto tramite il numero di lotto':
+      case 'Cerca prodotto tramite il codice di lotto':
         visualizzaProdotto();
         break;
-      case 'Cerca materia prima tramite il numero di lotto':
+      case 'Cerca materia prima tramite il codice di lotto':
         visualizzaMateriaPrima();
         break;
-      case 'Cerca NFT tramite token':
+      case 'Cerca NFT tramite ID':
         visualizzaNFT();
         break;
       case 'Visualizza NFT posseduti':
@@ -130,13 +130,13 @@ function menuConsumatore() {
   // può visualizzare nft, prodotti e materie prime
   inquirer.prompt(questions.questionsMenuConsumatore).then((answers) => {
     switch (answers.decisioneCons) {
-      case 'Cerca prodotto tramite il numero di lotto':
+      case 'Cerca prodotto tramite il codice di lotto':
         visualizzaProdotto();
         break;
-      case 'Cerca materia prima tramite il numero di lotto':
+      case 'Cerca materia prima tramite il codice di lotto':
         visualizzaMateriaPrima();
         break;
-      case 'Cerca NFT tramite token':
+      case 'Cerca NFT tramite ID':
         visualizzaNFT();
         break;
       case 'Logout':
@@ -253,7 +253,7 @@ function inserisciProdotto() {
       lottiMateriePrime: answers.lottiMateriePrime.replace(/\s/g, '').split(','),
       listaAttivita: [],
     };
-    console.log('\n PASSO 2: inserimento dei footprint delle attività: \n');
+    console.log('\n PASSO 2: inserimento e gestione delle attività di lavorazione: \n');
     inserisciAMenu(product);
   });
 }

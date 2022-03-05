@@ -18,8 +18,8 @@ module.exports = {
             
             console.log('\n' + tipo);
             console.log('\nData URL: '+nftBase64);
-            console.log('\nToken: ' + nft.token);
-            console.log('Lotto: ' + nft.lotto);
+            console.log('\nID: ' + nft.token);
+            console.log('Codice di lotto: ' + nft.lotto);
             console.log('Nome: ' + nft.name);
             console.log('Carbon Footprint: ' + nft.footprint + '\n');
             return true;
@@ -29,7 +29,7 @@ module.exports = {
     },
 
     printAttivita: function (nomiAttivita,footprint,lottiMateriePrime){
-      console.log('\nLotti delle materie prime utilizzate: '+lottiMateriePrime);
+      console.log('\nCodici di lotto delle materie prime utilizzate: '+lottiMateriePrime);
       console.log('\nAttività di lavorazione: \n');
       for(var i=0;i<nomiAttivita.length;i++){
         console.log('Nome Attività: '+nomiAttivita[i]);

@@ -4,7 +4,7 @@ module.exports = {
         {
             type: 'input',
             name: 'token',
-            message: "Inserisci il token da cercare",
+            message: "Inserisci l'ID del token da cercare",
             validate: (answer) => checkIfInputIsNumber(answer)
         }
 
@@ -13,7 +13,7 @@ module.exports = {
         {
             type: 'input',
             name: 'lotto',
-            message: "Inserisci il numero di lotto da cercare",
+            message: "Inserisci il codice di lotto da cercare",
             validate: (answer) => checkIfInputContainsBlank(answer),
         }
     ],
@@ -21,7 +21,7 @@ module.exports = {
         {
             type: 'input',
             name: 'lotto',
-            message: "Inserisci il numero di lotto",
+            message: "Inserisci il codice di lotto",
             validate: (answer) => checkIfInputContainsBlank(answer),
         },
         {
@@ -41,7 +41,7 @@ module.exports = {
         {
             type: 'input',
             name: 'lotto',
-            message: "Inserisci il numero di lotto da comprare",
+            message: "Inserisci il codice di lotto da comprare",
             validate: (answer) => checkIfInputContainsBlank(answer),
         }
     ],
@@ -49,7 +49,7 @@ module.exports = {
         {
             type: 'input',
             name: 'lotto',
-            message: "Inserisci il numero di lotto",
+            message: "Inserisci il codice di lotto",
             validate: (answer) => checkIfInputContainsBlank(answer),
         },
         {
@@ -61,7 +61,7 @@ module.exports = {
         {
             type: 'input',
             name: 'lottiMateriePrime',
-            message: "Inserisci i lotti delle materie prime utilizzate (devono essere separati da una virgola e con il prefisso MP_ - Esempio: MP_01,MP_02,MP_03)",
+            message: "Inserisci i codici di lotto delle materie prime utilizzate (Esempio formattazione: MP_01,MP_02,MP_03)",
             validate: (answer) => {
                 answer.replace(/\s/g, '');
                 if (!(/^MP_\w+(,MP_\w+)*$/.test(answer))) {
@@ -108,7 +108,7 @@ module.exports = {
             type: "list",
             name: "decisioneForn",
             message: "Azione",
-            choices: ["Inserisci Materia Prima", "Cerca materia prima tramite il numero di lotto", "Cerca prodotto tramite il numero di lotto", "Cerca NFT tramite token","Visualizza NFT posseduti","Logout"]
+            choices: ["Inserisci Materia Prima", "Cerca materia prima tramite il codice di lotto", "Cerca prodotto tramite il codice di lotto", "Cerca NFT tramite ID","Visualizza NFT posseduti","Logout"]
         }
     ],
     questionsMenuProduttore: [
@@ -116,7 +116,7 @@ module.exports = {
             type: "list",
             name: "decisioneProd",
             message: "Azione",
-            choices: ["Inserisci Prodotto", "Compra Materia Prima", "Cerca prodotto tramite il numero di lotto", "Cerca materia prima tramite il numero di lotto", "Cerca NFT tramite token","Visualizza NFT posseduti","Logout"]
+            choices: ["Inserisci Prodotto", "Compra Materia Prima", "Cerca prodotto tramite il codice di lotto", "Cerca materia prima tramite il codice di lotto", "Cerca NFT tramite ID","Visualizza NFT posseduti","Logout"]
         }
     ],
     questionsMenuConsumatore: [
@@ -124,7 +124,7 @@ module.exports = {
             type: "list",
             name: "decisioneCons",
             message: "Azione",
-            choices: ["Cerca prodotto tramite il numero di lotto", "Cerca materia prima tramite il numero di lotto", "Cerca NFT tramite token", "Logout"]
+            choices: ["Cerca prodotto tramite il codice di lotto", "Cerca materia prima tramite il codice di lotto", "Cerca NFT tramite ID", "Logout"]
         }
     ],
     questionsMenuAttivita: [
@@ -139,7 +139,7 @@ module.exports = {
 }
 function checkIfInputContainsBlank(answer){
     if (answer === null || answer == '' || /\s/g.test(answer)){
-        return "Il numero di lotto non può contene il carattere space"
+        return "Il codice di lotto non può contene il carattere space"
     }
     return true;
 }
