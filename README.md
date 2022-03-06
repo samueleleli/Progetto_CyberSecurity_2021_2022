@@ -113,7 +113,7 @@ node client.js
 
 L'avvio in maniera corretta del client è testimoniato dall'apparizione del menu di login:
 
-![alt text](https://drive.google.com/file/d/1DkSIncirw6bp6Nl4Khbmewczd-xpsDUv/view)
+![alt text](https://drive.google.com/uc?export=view&id=1DkSIncirw6bp6Nl4Khbmewczd-xpsDUv)
 
 
 
