@@ -43,7 +43,7 @@ Installati i precedenti software si può eseguire la clone del progetto attraver
 ```bash
 git clone https://github.com/samueleleli/Progetto_CyberSecurity_2021_2022.git
 ```
-Nella directory in cui è stato eseguita la clone apparirà quindi la directory *Progetto_CyberSecurity_2021_2022*. Bisogna quindi postarsi nella suddetta cartella e installare le dipendenze di progetto lanciando i seguenti comandi:
+Nella directory in cui è stato eseguita la clone apparirà quindi la directory *Progetto_CyberSecurity_2021_2022*. Bisogna quindi spostarsi nella suddetta cartella e installare le dipendenze di progetto lanciando i seguenti comandi:
 
 ```bash
 cd Progetto_CyberSecurity_2021_2022 
