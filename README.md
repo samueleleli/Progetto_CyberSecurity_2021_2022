@@ -61,6 +61,7 @@ A questo punto, a seconda del sistema operativo utilizzato, bisogna eseguire le 
     2. Eseguire i seguenti comandi:
     
 ```bash
+cd WINDOWS-StartNetworkAndDeploy
 sh startnetwork.sh
 # or ./startnetwork.sh
 ``` 
