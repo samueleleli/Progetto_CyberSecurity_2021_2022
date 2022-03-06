@@ -95,7 +95,7 @@ Eseguite tutte le operazioni precedenti, per lanciare il client ci sono 2 possib
 Eseguire il seguente comando:
 
 ```bash
-#posizione di partentza: MACOS-StartNetworkAndDeploy o WINDOWS-StartNetworkAndDeploy
+#posizione di partenza: MACOS-StartNetworkAndDeploy o WINDOWS-StartNetworkAndDeploy
 
 sh runclient.sh
 # or ./runclient.sh
