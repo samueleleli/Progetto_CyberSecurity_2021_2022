@@ -77,6 +77,8 @@ sh startnetwork.sh
 ```
 ## 
 
+***N.B. Per far funzionare i container in maniera corretta potrebbe essere necessario disabilitare l'opzione "Use Docker Compose V2" presente nel menu settings di Docker Desktop***
+
 All'interno della cartella è presente anche il file per fermare i container di Docker.
 Per fermarli, basta eseguire:
 
