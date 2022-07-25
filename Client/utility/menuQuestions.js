@@ -22,7 +22,7 @@ module.exports = {
             type: 'input',
             name: 'lotto',
             message: "Inserisci il codice di lotto",
-            validate: (answer) => checkIfInputContainsBlank(answer),
+            validate: (answer) => checkJsonValid(answer),
         },
         {
             type: 'input',
@@ -50,7 +50,7 @@ module.exports = {
             type: 'input',
             name: 'lotto',
             message: "Inserisci il codice di lotto",
-            validate: (answer) => checkIfInputContainsBlank(answer),
+            validate: (answer) => checkJsonValid(answer),
         },
         {
             type: 'input',
@@ -135,8 +135,24 @@ module.exports = {
             choices: ["Inserisci Nuova Attività", "Visualizza tutte le Attività", "Conferma definitiva dell'inserimento del prodotto", "Back"]
         }
     ],
-    //etc
 }
+
+function checkJsonValid(lotto){
+    let check = checkIfInputContainsBlank(lotto)
+    if(check===true){
+        try {
+            if(lotto.includes('"') || lotto.includes("'") || lotto.includes("\\")) return "Caratteri inseriti non validi";
+            let str = '{"lotto":'+'"'+lotto+'"}' 
+            JSON.parse(str);
+        } catch (e) {
+            return "Caratteri inseriti non validi";
+        }
+        return true;
+    }
+    return check
+    
+}
+
 function checkIfInputContainsBlank(answer){
     if (answer === null || answer == '' || /\s/g.test(answer)){
         return "Il codice di lotto non può contene il carattere space"
